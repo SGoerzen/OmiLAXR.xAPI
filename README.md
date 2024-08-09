@@ -1,4 +1,4 @@
-# OmiLAXR.xAPI
+# OmiLAXRv2
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxr.xapi.git
+git remote add origin https://gitlab.com/learntech-rwth/omilaxr-ecosystem/omilaxrv2.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxr.xapi/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.com/learntech-rwth/omilaxr-ecosystem/omilaxrv2/-/settings/integrations)
 
 ## Collaborate with your team
 
