@@ -1,7 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using OmiLAXR.xAPI.Actors;
 using TinCan;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace OmiLAXR.xAPI
 {
@@ -14,7 +19,39 @@ namespace OmiLAXR.xAPI
         public static LearningRecordStore Instance
             => _instance ??= FindObjectOfType<LearningRecordStore>();
 
-        private static bool SendToLrs(ILRS lrs, Statement statement)
+        public Action<LrsCredentials> onStartedSending;
+        
+        private string tempFolder => System.IO.Path.Combine(System.IO.Path.GetTempPath(), "OmiLAXR.xAPI");
+        
+        [Tooltip("xAPI Base URL")]
+        public string statementIdUri = "https://xapi.elearn.rwth-aachen.de/definitions/";
+        
+        public LrsCredentials credentials = new LrsCredentials("https://lrs.elearn.rwth-aachen.de/data/xAPI", "", "");
+        private RemoteLRS _remoteLRS;
+        
+        public bool AreValidCredentials
+            => !string.IsNullOrEmpty(credentials.endpoint);
+        
+        public Instructor instructor;
+
+        #region Background Processes
+
+        private BackgroundWorker _sendWorker;
+        
+        #endregion
+        
+        private void Start()
+        {
+            StartSending();
+        }
+
+        private void StartSending()
+        {
+            _remoteLRS = new RemoteLRS(credentials.endpoint, credentials.key, credentials.secret);
+            onStartedSending?.Invoke(credentials);
+        }
+        
+        public static bool SendTo(ILRS lrs, Statement statement)
         {
             // Transfer single statement to LRS
             var resp = lrs.SaveStatement(statement);
@@ -28,7 +65,7 @@ namespace OmiLAXR.xAPI
             return resp.success;
         }
 
-        private static bool SendToLrs(ILRS lrs, IEnumerable<Statement> statements)
+        public static bool SendTo(ILRS lrs, IEnumerable<Statement> statements)
         {
             var resp = lrs.SaveStatements(statements.ToList());
             if (!resp.success)
@@ -44,18 +81,18 @@ namespace OmiLAXR.xAPI
         /// <param name="lrs"></param>
         /// <param name="statement"></param>
         /// <param name="pathLocalStorage"></param>
-        public static TransferCode SendStatement(RemoteLRS lrs, Statement statement)
+        public TransferCode SendStatement(Statement statement)
         {
-            if (lrs == null)
+            if (AreValidCredentials)
                 return TransferCode.UnknownLrs;
-            return SendToLrs(lrs, statement) ? TransferCode.Success : TransferCode.Error;
+            return SendTo(_remoteLRS, statement) ? TransferCode.Success : TransferCode.Error;
         }
 
-        public static TransferCode SendStatements(RemoteLRS lrs, IEnumerable<Statement> statements)
+        public TransferCode SendStatements(IEnumerable<Statement> statements)
         {
-            if (lrs == null)
+            if (AreValidCredentials)
                 return TransferCode.UnknownLrs;
-            return SendToLrs(lrs, statements) ? TransferCode.Success : TransferCode.Error;
+            return SendTo(_remoteLRS, statements) ? TransferCode.Success : TransferCode.Error;
         }
 
         /// <summary>
