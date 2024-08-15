@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json.Linq;
+using OmiLAXR.xAPI.Composers;
 using xAPI.Registry;
 using tc = TinCan;
 
@@ -18,6 +22,103 @@ namespace OmiLAXR.xAPI.Extensions
             }
         }
 
+        public static tc.Statement ToTinCanStatement(this xApiStatement s, string statementUri)
+        {
+            return new tc.Statement()
+            {
+                // Statement Meta
+                timestamp = s.CreatedAt,
+                version = tc.TCAPIVersion.latest(),
+                // Todo authority
+                // Actor
+                actor = s.GetActor().ToTinCanAgent(),
+                // Todo: group
+                // Verb
+                verb = s.GetVerb().ToTinCanVerb(statementUri),
+                // Activity
+                target = s.GetActivity().ToTinCanActivity(statementUri),
+                // Context
+                context = s.GetContextExtensions().ToTinCanContext(statementUri, s.GetInstructor(), s.GetTeam()),
+                // Result
+                result = s.GetResultExtensions().ToTinCanResult(statementUri, s.GetScore(), s.GetCompletion(), s.GetSuccess(), s.GetResponse())
+            };
+        }
+        
+        public static tc.Group ToTinCanGroup(this xAPI_Actor group, IEnumerable<xAPI_Actor> members)
+        {
+            return new tc.Group
+            {
+                name = group.Name,
+                mbox = "mailto:" + group.Email,
+                member = members.Select(a => a.ToTinCanAgent()).ToList()
+            };
+        }
+        
+        public static tc.Context ToTinCanContext(this xAPI_Extensions_Context extensions, string uri, xAPI_Actor? instructor = null, xAPI_Actor? team = null)
+        {
+            return new tc.Context()
+            {
+                instructor = instructor?.ToTinCanAgent(),
+                extensions = extensions?.ToTinCanExtensions(uri),
+                registration = null,
+                team = team?.ToTinCanAgent(),
+            };
+        }
+
+        public static tc.Result ToTinCanResult(this xAPI_Extensions_Result extensions, string uri, tc.Score score = null, bool? completion = null, bool? success = null, string response = null)
+        {
+            return new tc.Result
+            {
+                score = score,
+                completion = completion,
+                success = success,
+                extensions = extensions?.ToTinCanExtensions(uri),
+                response = response
+            };
+        }
+        
+        
+        private static tc.Verb ToTinCanVerb(this xAPI_Verb verb, string uri)
+        {
+            var v = new tc.Verb
+            {
+               
+                id = new Uri(verb.CreateValidId(uri)),
+                display = new tc.LanguageMap()
+            };
+
+            foreach (var name in verb.Names)
+                v.display.Add(name.Key, name.Value);
+
+            return v;
+        }
+
+        private static tc.Activity ToTinCanActivity(this xAPI_Activity activity, string uri, xAPI_Extensions extensions = null)
+        {            
+            var a = new tc.Activity
+            {
+                id = activity.CreateValidId(uri), // todo: combine with type
+                definition = activity.ToTinCanActivityDefinition()
+            };
+
+            // todo!
+            a.definition.type = null;
+
+            a.definition.extensions = extensions?.ToTinCanExtensions(uri);
+
+            return a;
+        }
+        
+        public static tc.Agent ToTinCanAgent(this xAPI_Actor actor)
+        {
+            return new tc.Agent
+            {
+                
+                name = actor.Name,
+                mbox = "mailto:" + actor.Email
+            };
+        }
+        
         public static tc.Extensions ToTinCanExtensions(this xAPI_Extensions extensions, System.Uri uri)
             => ToTinCanExtensions(extensions, uri.ToString());
         public static tc.Extensions ToTinCanExtensions(this xAPI_Extensions extensions, string uri)

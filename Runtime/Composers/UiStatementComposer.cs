@@ -7,32 +7,39 @@ namespace OmiLAXR.xAPI.Composers
     [AddComponentMenu("OmiLAXR / 4) Composers / UI Statement Composer (xAPI)")]
     public class UiStatementComposer : xApiStatementComposer<UiTrackingBehaviour>
     {
-        protected override void Awake()
+        protected override void Compose(UiTrackingBehaviour tb)
         {
-            base.Awake();
-
             trackingBehaviour.OnClickedButton += (_, button) =>
             {
-                var name = button.gameObject.GetTrackingName();
+                var buttonName = button.gameObject.GetTrackingName();
                 var text = button.GetTextOrDefault();
                 
-                // Actor.Clicked(UIElementsEntryPoint.name().uiElementType()).Context().Result()
+                var statement = actor.Does(xapi.generic.verbs.clicked)
+                    .WithExtension(xapi.virtualReality.extensions.activity
+                        .uiElementValue(text)
+                        .uiElementType("button")
+                        .vrObjectName(buttonName))
+                    .Activity(xapi.virtualReality.activities.uiElement);
                 
-                DebugLog.xAPI.Print("Clicked " + name);
-                
-                /*LearningRecordStore.Instance.SendStatement(
-                    verb: xAPI_Definitions.generic.verbs.clicked,
-                    activity: xAPI_Definitions.virtualReality.activities.uiElement,
-                    extensions: new xAPI_Extensions
-                    {
-                        xAPI_Definitions.systemControl.extensions.activity.name(text),
-                        xAPI_Definitions.virtualReality.extensions.activity
-                            .vrObjectName(name).uiElementValue(text).uiElementType("button"),
-                    }
-                );*/
-
+                SendStatement(statement);
             };
-            trackingBehaviour.OnChangedSlider += (_, slider, value) => { };
+            trackingBehaviour.OnChangedSlider += (_, slider, newValue) =>
+            {
+                var maxValue = slider.maxValue;
+                var minValue = slider.minValue;
+                var sliderName = slider.name;
+                
+                var statement = actor.Does(xapi.generic.verbs.clicked)
+                    .WithExtension(xapi.virtualReality.extensions.activity
+                        .uiElementValue(newValue)
+                        .uiElementMinValue(minValue)
+                        .uiElementMaxValue(maxValue)
+                        .uiElementType("slider")
+                        .vrObjectName(sliderName))
+                    .Activity(xapi.virtualReality.activities.uiElement);
+                
+                SendStatement(statement);
+            };
         }
     }
 }

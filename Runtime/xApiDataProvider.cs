@@ -1,5 +1,3 @@
-using OmiLAXR.Endpoints;
-using OmiLAXR.xAPI.Composers;
 using UnityEngine;
 
 namespace OmiLAXR.xAPI
@@ -9,10 +7,5 @@ namespace OmiLAXR.xAPI
     {
         [Tooltip("xAPI Base URL")]
         public string statementIdUri = "https://xapi.elearn.rwth-aachen.de/definitions/";
-
-        public void SendStatement(xApiStatement statement)
-        {
-            
-        }
     }
 }

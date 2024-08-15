@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+using OmiLAXR.Composers;
 using OmiLAXR.Endpoints;
 using OmiLAXR.xAPI.Actors;
+using OmiLAXR.xAPI.Composers;
+using OmiLAXR.xAPI.Extensions;
 using TinCan;
 using UnityEngine;
 
@@ -12,15 +12,6 @@ namespace OmiLAXR.xAPI.Endpoints
     [AddComponentMenu("OmiLAXR / 6) Endpoints / Learning Record Store (LRS for xAPI)")]
     public class LearningRecordStore : DataEndpoint
     {
-        private static LearningRecordStore _instance;
-        /// <summary>
-        /// Singleton instance of the OmiLAXR LRS Controller. Only one can exist at a time.
-        /// </summary>
-        public static LearningRecordStore Instance
-            => _instance ??= FindObjectOfType<LearningRecordStore>();
-
-        public Action<BasicAuthCredentials> onStartedSending;
-        
         private string tempFolder => System.IO.Path.Combine(System.IO.Path.GetTempPath(), "OmiLAXR.xAPI");
         
         [Tooltip("xAPI Base URL")]
@@ -28,70 +19,12 @@ namespace OmiLAXR.xAPI.Endpoints
         
         private RemoteLRS _remoteLRS;
         
-        public bool AreValidCredentials
-            => !string.IsNullOrEmpty(credentials.endpoint);
-        
         public Instructor instructor;
-
-        #region Background Processes
-
-        private BackgroundWorker _sendWorker;
+        public Team team;
         
-        #endregion
-        
-        private void Start()
-        {
-            StartSending();
-        }
-
-        private void StartSending()
+        protected void Start()
         {
             _remoteLRS = new RemoteLRS(credentials.endpoint, credentials.username, credentials.password);
-            onStartedSending?.Invoke(credentials);
-        }
-        
-        public static bool SendTo(ILRS lrs, Statement statement)
-        {
-            // Transfer single statement to LRS
-            var resp = lrs.SaveStatement(statement);
-
-            if (!resp.success)
-            {
-                // Print error message to know more about on debug
-                DebugLog.xAPI.Error($"Error Message: {resp.errMsg}, Http Error: {resp.httpException}");
-            }
-
-            return resp.success;
-        }
-
-        public static bool SendTo(ILRS lrs, IEnumerable<Statement> statements)
-        {
-            var resp = lrs.SaveStatements(statements.ToList());
-            if (!resp.success)
-            {
-                // Print error message to know more about on debug
-                Debug.LogError($"Error Message: {resp.errMsg}, Http Error: {resp.httpException}");
-            }
-            return resp.success;
-        }
-        /// <summary>
-        /// Transfer a xAPI statement to the LRS. If transfer was not successful, save xAPI locally.
-        /// </summary>
-        /// <param name="lrs"></param>
-        /// <param name="statement"></param>
-        /// <param name="pathLocalStorage"></param>
-        public TransferCode SendStatement(Statement statement)
-        {
-            if (AreValidCredentials)
-                return TransferCode.UnknownLrs;
-            return SendTo(_remoteLRS, statement) ? TransferCode.Success : TransferCode.Error;
-        }
-
-        public TransferCode SendStatements(IEnumerable<Statement> statements)
-        {
-            if (AreValidCredentials)
-                return TransferCode.UnknownLrs;
-            return SendTo(_remoteLRS, statements) ? TransferCode.Success : TransferCode.Error;
         }
 
         /// <summary>
@@ -112,6 +45,22 @@ namespace OmiLAXR.xAPI.Endpoints
             }
 
             return resultTransferStatements;
+        }
+
+        protected override TransferCode HandleSending(IStatement statement)
+        {
+           
+            var stmt = statement as xApiStatement;
+            // Transfer single statement to LRS
+            var resp = _remoteLRS.SaveStatement(stmt.ToTinCanStatement(statementIdUri));
+
+            if (resp.success) 
+                return TransferCode.Success;
+            
+            // Print error message to know more about on debug
+            DebugLog.xAPI.Error($"Error Message: {resp.errMsg}, Http Error: {resp.httpException}");
+            return TransferCode.Error;
+
         }
     }
 }

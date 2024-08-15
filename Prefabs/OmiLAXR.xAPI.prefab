@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7964579538479376775, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       propertyPath: m_Name
-      value: OmiLAXR.xAPI Data Provider
+      value: OmiLAXR.xAPI
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4067064354450214901, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
@@ -78,12 +78,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9153256989481736829}
+    - targetCorrespondingSourceObject: {fileID: 3247022003218735948, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5352956201950037937}
     - targetCorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8103800281358289972}
-    - targetCorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1632488344632647308}
+      addedObject: {fileID: 7860620081402875794}
     - targetCorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9135528826683086705}
@@ -93,33 +93,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
   m_PrefabInstance: {fileID: 4467940648353388239}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8103800281358289972
+--- !u!114 &7860620081402875794
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 949631878024754708}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98f626ff777f41679a88ee506270542d, type: 3}
+  m_Script: {fileID: 11500000, guid: 95754399aa7e43b59131d9df6cc9aa8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorName: Anonymous
-  actorEmail: anonymous@omilaxr.dev
---- !u!114 &1632488344632647308
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 949631878024754708}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a07088234fb940128b5705321a07466c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  filename: lrs.credentials.json
+  filename: credentials.json
 --- !u!114 &9135528826683086705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +123,25 @@ MonoBehaviour:
     username: 
     password: 
   statementIdUri: https://xapi.elearn.rwth-aachen.de/definitions/
-  instructor: {fileID: 8103800281358289972}
+  instructor: {fileID: 5194246650116706146}
+  team: {fileID: 9181553068461224833}
+--- !u!1 &1373295615158203779 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3247022003218735948, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+  m_PrefabInstance: {fileID: 4467940648353388239}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5352956201950037937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373295615158203779}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ffc6007b1e44c01ad3fea2220caaff5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1949422813583137368 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
