@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OmiLAXR.xAPI.Extensions;
 using TinCan;
 using xAPI.Registry;
 
-namespace OmiLAXR.xAPI
+namespace OmiLAXR.xAPI.Composers
 {
-    public class xAPI
+    public class xApiStatementBuilder
     {
         public Agent CreateAgent(xAPI_Actor actor) => CreateAgent(actor.Name, actor.Email);
         /// <summary>
@@ -25,7 +26,7 @@ namespace OmiLAXR.xAPI
             };
         }
 
-        private Verb CreateVerb(string uri, xAPI_Verb verb)
+        public Verb CreateVerb(string uri, xAPI_Verb verb)
         {
             var v = new Verb
             {
@@ -40,7 +41,7 @@ namespace OmiLAXR.xAPI
             return v;
         }
 
-        private Activity CreateActivity(string uri, xAPI_Activity activity, xAPI_Extensions extensions = null)
+        public Activity CreateActivity(string uri, xAPI_Activity activity, xAPI_Extensions extensions = null)
         {            
             var a = new Activity
             {
@@ -107,9 +108,9 @@ namespace OmiLAXR.xAPI
             return s;
         }
         
-        private Group CreateGroup(xAPI_Actor group, IEnumerable<xAPI_Actor> members)
+        public Group CreateGroup(xAPI_Actor group, IEnumerable<xAPI_Actor> members)
             => CreateGroup(group.Name, group.Email, members);
-        private Group CreateGroup(string name, string mail, IEnumerable<xAPI_Actor> actors)
+        public Group CreateGroup(string name, string mail, IEnumerable<xAPI_Actor> actors)
         {
             var members = actors.Select(a => CreateAgent(a.Name, a.Email));
             return new Group
@@ -161,7 +162,7 @@ namespace OmiLAXR.xAPI
         /// <param name="instructor"></param>
         /// <param name="team"></param>
         /// <returns></returns>
-        private Context CreateContext(string uri, xAPI_Extensions_Context extensions = null, xAPI_Actor? instructor = null, xAPI_Actor? team = null)
+        public Context CreateContext(string uri, xAPI_Extensions_Context extensions = null, xAPI_Actor? instructor = null, xAPI_Actor? team = null)
         {
             return new Context()
             {
@@ -193,5 +194,4 @@ namespace OmiLAXR.xAPI
                 score, completion, success);
         }
     }
-
 }

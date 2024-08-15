@@ -1,7 +1,9 @@
-using OmiLAXR.Pipelines.Learner;
+using OmiLAXR.TrackingBehaviours.Learner;
+using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
+    [AddComponentMenu("OmiLAXR / 6) Composers / Mouse Statement Composer (xAPI)")]
     public class MouseStatementComposer : xApiStatementComposer<MouseTrackingBehaviour>
     {
         protected override void Awake()

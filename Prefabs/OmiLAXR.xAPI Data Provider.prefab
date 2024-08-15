@@ -50,12 +50,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7964579538479376775, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       propertyPath: m_Name
-      value: OmiLAXR Data Provider Variant
+      value: OmiLAXR.xAPI Data Provider
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4067064354450214901, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7964579538479376775, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6295353509164238201}
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2094842324383977829}
@@ -68,7 +72,66 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9153256989481736829}
+    - targetCorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8103800281358289972}
+    - targetCorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1632488344632647308}
+    - targetCorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9135528826683086705}
   m_SourcePrefab: {fileID: 100100000, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+--- !u!1 &949631878024754708 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+  m_PrefabInstance: {fileID: 4467940648353388239}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8103800281358289972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949631878024754708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f626ff777f41679a88ee506270542d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: Anonymous
+  email: anonymous@omilaxr.dev
+--- !u!114 &1632488344632647308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949631878024754708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a07088234fb940128b5705321a07466c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  filename: lrs.credentials.json
+--- !u!114 &9135528826683086705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949631878024754708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11beff66bb8644bbb6374c5f60155a74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  credentials:
+    endpoint: https://lrs.elearn.rwth-aachen.de/data/xAPI
+    username: 
+    password: 
+  statementIdUri: https://xapi.elearn.rwth-aachen.de/definitions/
+  instructor: {fileID: 8103800281358289972}
 --- !u!1 &1949422813583137368 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
@@ -126,3 +189,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trackingBehaviour: {fileID: 0}
+--- !u!1 &5802482110548262728 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7964579538479376775, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+  m_PrefabInstance: {fileID: 4467940648353388239}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6295353509164238201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5802482110548262728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d16cee1a78b54bd38a0d05afbeb74634, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  composers: []
+  statementIdUri: https://xapi.elearn.rwth-aachen.de/definitions/

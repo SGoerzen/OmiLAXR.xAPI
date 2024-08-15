@@ -1,12 +1,10 @@
-using System;
-using OmiLAXR.Data;
-using OmiLAXR.Pipelines.Learner;
-using OmiLAXR.xAPI.Extensions;
-using UnityEditor.UIElements;
-using xAPI.Registry;
+using OmiLAXR.Extensions;
+using OmiLAXR.TrackingBehaviours.Learner;
+using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
+    [AddComponentMenu("OmiLAXR / 4) Composers / UI Statement Composer (xAPI)")]
     public class UiStatementComposer : xApiStatementComposer<UiTrackingBehaviour>
     {
         protected override void Awake()

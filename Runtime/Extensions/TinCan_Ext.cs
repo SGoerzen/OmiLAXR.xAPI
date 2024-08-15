@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 using xAPI.Registry;
 using tc = TinCan;
 
-namespace OmiLAXR.xAPI
+namespace OmiLAXR.xAPI.Extensions
 {
     public static class TinCan_Ext
     {

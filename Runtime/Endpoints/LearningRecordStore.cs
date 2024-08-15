@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using OmiLAXR.Endpoints;
 using OmiLAXR.xAPI.Actors;
 using TinCan;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace OmiLAXR.xAPI
+namespace OmiLAXR.xAPI.Endpoints
 {
-    public class LearningRecordStore : MonoBehaviour
+    [AddComponentMenu("OmiLAXR / 6) Endpoints / Learning Record Store (LRS for xAPI)")]
+    public class LearningRecordStore : DataEndpoint
     {
         private static LearningRecordStore _instance;
         /// <summary>
@@ -19,14 +19,13 @@ namespace OmiLAXR.xAPI
         public static LearningRecordStore Instance
             => _instance ??= FindObjectOfType<LearningRecordStore>();
 
-        public Action<LrsCredentials> onStartedSending;
+        public Action<BasicAuthCredentials> onStartedSending;
         
         private string tempFolder => System.IO.Path.Combine(System.IO.Path.GetTempPath(), "OmiLAXR.xAPI");
         
         [Tooltip("xAPI Base URL")]
         public string statementIdUri = "https://xapi.elearn.rwth-aachen.de/definitions/";
         
-        public LrsCredentials credentials = new LrsCredentials("https://lrs.elearn.rwth-aachen.de/data/xAPI", "", "");
         private RemoteLRS _remoteLRS;
         
         public bool AreValidCredentials
@@ -47,7 +46,7 @@ namespace OmiLAXR.xAPI
 
         private void StartSending()
         {
-            _remoteLRS = new RemoteLRS(credentials.endpoint, credentials.key, credentials.secret);
+            _remoteLRS = new RemoteLRS(credentials.endpoint, credentials.username, credentials.password);
             onStartedSending?.Invoke(credentials);
         }
         

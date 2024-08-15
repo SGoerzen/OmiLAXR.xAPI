@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 using TinCan;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI
+namespace OmiLAXR.xAPI.Endpoints
 {
     [RequireComponent(typeof(LearningRecordStore))]
     public class LocalFallback : MonoBehaviour
