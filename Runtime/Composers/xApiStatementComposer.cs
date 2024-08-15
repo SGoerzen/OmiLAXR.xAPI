@@ -8,7 +8,7 @@ namespace OmiLAXR.xAPI.Composers
         where T : TrackingBehaviour
     {
         protected readonly xApiStatement.Actor actor = new xApiStatement.Actor();
-        protected readonly xAPI_Contexts ctx = new xAPI_Contexts();
+        protected readonly xAPI_Contexts xapi = new xAPI_Contexts();
         protected xApiDataProvider[] dataProviders;
 
         protected override void Awake()

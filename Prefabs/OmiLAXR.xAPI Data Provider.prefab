@@ -60,6 +60,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7964579538479376775, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6295353509164238201}
+    - targetCorrespondingSourceObject: {fileID: 7964579538479376775, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5194246650116706146}
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2094842324383977829}
@@ -208,3 +211,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   composers: []
   statementIdUri: https://xapi.elearn.rwth-aachen.de/definitions/
+--- !u!114 &5194246650116706146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5802482110548262728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f626ff777f41679a88ee506270542d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: Anonymous
+  email: anonymous@omilaxr.dev

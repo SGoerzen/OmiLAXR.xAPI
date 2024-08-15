@@ -43,24 +43,41 @@ namespace OmiLAXR.xAPI.Composers
         private xAPI_Extensions_Result _resultExtensions;
 
         [CanBeNull] private Score _score;
-        public bool? success = null;
-        public bool? completion = null;
+        private bool? success = null;
+        private bool? completion = null;
+        [CanBeNull] private string response = null;
 
         public xApiStatement Activity(xAPI_Activity activity, 
-            xAPI_Extensions_Activity activityExtensions, 
-            bool? completion = null, bool? success = null, [CanBeNull] string response = null)
+            xAPI_Extensions_Activity activityExtensions = null)
         {
             _activity = activity;
-            _activityExtensions = activityExtensions;
-
-            this.completion = completion;
-            this.success = success;
+            
+            if (activityExtensions != null)
+                _activityExtensions = activityExtensions;
 
             return this;
         }
         // public void Object(xAPI_Activity obj) {}
 
         public xAPI_Verb GetVerb() => _verb;
+
+        public xApiStatement WithSuccess(bool success)
+        {
+            this.success = success;
+            return this;
+        }
+
+        public xApiStatement WithCompletion(bool completion)
+        {
+            this.completion = completion;
+            return this;
+        }
+
+        public xApiStatement WithResponse(string response)
+        {
+            this.response = response;
+            return this;
+        }
         
         public xApiStatement WithContext(xAPI_Extensions_Context extensions)
         {

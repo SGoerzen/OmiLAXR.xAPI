@@ -5,9 +5,9 @@
     "description": "This is a package for OmiLAXR for enabling xAPI.",
     "unity": "2021.3",
     "unityRelease": "15f1",
-    "documentationUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/omilaxrv2.xapi/-/wikis",
-    "changelogUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/omilaxrv2.xapi/-/blob/main/CHANGELOG",
-    "licensesUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/omilaxrv2.xapi/-/blob/main/LICENSE",
+    "documentationUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxr.xapi/-/wikis",
+    "changelogUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxrv2.xapi/-/blob/main/CHANGELOG",
+    "licensesUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxrv2.xapi/-/blob/main/LICENSE",
     "dependencies": {
       "com.unity.nuget.newtonsoft-json": "3.0.2"
    },
