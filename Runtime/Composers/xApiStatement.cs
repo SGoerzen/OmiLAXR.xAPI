@@ -7,7 +7,7 @@ namespace OmiLAXR.xAPI.Composers
 {
     public class xApiStatement
     {
-        public class Actor
+        public class ActorRole
         {
             internal xAPI_Actor[] _members;
             internal xAPI_Actor _actor;
@@ -15,12 +15,12 @@ namespace OmiLAXR.xAPI.Composers
             internal xAPI_Actor? _instructor = null;
             internal xAPI_Actor? _team = null;
 
-            public Actor()
+            public ActorRole()
             {
                 
             }
 
-            public Actor(xAPI_Actor group, xAPI_Actor[] members)
+            public ActorRole(xAPI_Actor group, xAPI_Actor[] members)
             {
                 _actor = group;
                 _members = members;
@@ -34,7 +34,7 @@ namespace OmiLAXR.xAPI.Composers
         }
         
         private static xApiStatementBuilder _builder = new xApiStatementBuilder();
-        private xApiStatement.Actor _actor;
+        private ActorRole _actor;
         private xAPI_Verb _verb;
         private xAPI_Activity _activity;
 
@@ -51,14 +51,18 @@ namespace OmiLAXR.xAPI.Composers
             xAPI_Extensions_Activity activityExtensions = null)
         {
             _activity = activity;
-            
-            if (activityExtensions != null)
-                _activityExtensions = activityExtensions;
+            _activityExtensions.AddRange(activityExtensions);
 
             return this;
         }
         // public void Object(xAPI_Activity obj) {}
 
+        public xApiStatement WithExtension(xAPI_Extensions_Activity activityExtensions)
+        {
+            _activityExtensions.AddRange(activityExtensions);
+            return this;
+        }
+        
         public xAPI_Verb GetVerb() => _verb;
 
         public xApiStatement WithSuccess(bool success)
@@ -106,7 +110,7 @@ namespace OmiLAXR.xAPI.Composers
             return this;
         }
         
-        public xApiStatement(xApiStatement.Actor actor, xAPI_Verb verb)
+        public xApiStatement(ActorRole actor, xAPI_Verb verb)
         {
             _actor = actor;
             _verb = verb;

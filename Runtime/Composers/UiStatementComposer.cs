@@ -11,7 +11,7 @@ namespace OmiLAXR.xAPI.Composers
         {
             base.Awake();
 
-            trackingBehaviour.OnClickedButton += button =>
+            trackingBehaviour.OnClickedButton += (_, button) =>
             {
                 var name = button.gameObject.GetTrackingName();
                 var text = button.GetTextOrDefault();
@@ -32,7 +32,7 @@ namespace OmiLAXR.xAPI.Composers
                 );*/
 
             };
-            trackingBehaviour.OnChangedSlider += (slider, value) => { };
+            trackingBehaviour.OnChangedSlider += (_, slider, value) => { };
         }
     }
 }
