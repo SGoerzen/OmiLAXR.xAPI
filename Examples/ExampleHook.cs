@@ -47,6 +47,14 @@ namespace OmiLAXR.xAPI.Examples
                 DebugLog.xAPI.Print($"Dropped extension by path 'virtualReality.extensions.activity.uiElementMinValue': {statement}");
             }
             
+            // Discard statement
+            if (statement.HasActivity("generic.activities.mouse"))
+            {
+                DebugLog.xAPI.Print($"Has activity 'generic.activities.mouse': {statement}");
+                statement.Discard();
+                DebugLog.xAPI.Print($"Discarded statement: {statement}");
+            }
+            
             return statement;
         }
     }

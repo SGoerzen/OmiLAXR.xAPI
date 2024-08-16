@@ -8,7 +8,7 @@ using xAPI.Registry;
 
 namespace OmiLAXR.xAPI.Composers
 {
-    public class xApiStatement : IStatement
+    public sealed class xApiStatement : IStatement
     {
         public class ActorRole
         {
@@ -75,15 +75,23 @@ namespace OmiLAXR.xAPI.Composers
         private bool? _success = null;
         private bool? _completion = null;
         [CanBeNull] private string _response = null;
+
+        private bool _isDiscarded;
+        public bool IsDiscarded() => _isDiscarded;
         
+        #region Matching Methods
         public bool MatchPaths(string verbPath, string activityPath, char pathSeperator = '.')
-        {
-            return _verb.MatchesPath(verbPath, pathSeperator) && _activity.MatchesPath(activityPath, pathSeperator);
-        }
+            => _verb.MatchesPath(verbPath, pathSeperator) && _activity.MatchesPath(activityPath, pathSeperator);
         public bool MatchKeys(string verbKey, string activityKey)
-        {
-            return _verb.Key == verbKey && _activity.Key == activityKey;
-        }
+            => _verb.Key == verbKey && _activity.Key == activityKey;
+        public bool HasVerb(string verbPath)
+            => GetVerb().MatchesPath(verbPath);
+        public bool HasVerbKey(string verbKey)
+            => GetVerb().Key == verbKey;
+        public bool HasActivity(string activityPath)
+            => GetActivity().MatchesPath(activityPath);
+        public bool HasActivityKey(string activityKey)
+            => GetActivity().Key == activityKey;
         public bool HasContextKey(string contextKey)
             => _contextExtensions.ContainsKey(contextKey);
         public bool HasContext(string contextPath)
@@ -96,6 +104,7 @@ namespace OmiLAXR.xAPI.Composers
             => _resultExtensions.ContainsKey(resultKey);
         public bool HasResult(string resultPath)
             => _resultExtensions.ContainsPath(resultPath);
+        #endregion
 
         public xApiStatement Activity(xAPI_Activity activity,
             xAPI_Extensions_Activity activityExtensions = null)
@@ -121,6 +130,11 @@ namespace OmiLAXR.xAPI.Composers
             return this;
         }
 
+        public void Discard()
+        {
+            _isDiscarded = true;
+        }
+        
         /// <summary>
         /// Use only if you know what you do!
         /// </summary>
