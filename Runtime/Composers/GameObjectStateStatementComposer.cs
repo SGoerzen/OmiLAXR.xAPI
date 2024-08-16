@@ -1,9 +1,15 @@
+using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.System;
+using OmiLAXR.xAPI.Actors;
+using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
-    public class GameObjectStateStatementComposer : xApiStatementComposer<GameObjectsStateTrackingBehaviour>
+    [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Statement Composer (xAPI)")]
+    public sealed class GameObjectStateStatementComposer : xApiStatementComposer<GameObjectsStateTrackingBehaviour>
     {
+        protected override Author GetAuthor()
+            => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(GameObjectsStateTrackingBehaviour tb)
         {
             tb.OnDestroyedGameObject += (_, o) =>

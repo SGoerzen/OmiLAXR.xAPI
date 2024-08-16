@@ -13,8 +13,8 @@ namespace OmiLAXR.xAPI.Hooks
         protected readonly xAPI_Contexts xapi = new xAPI_Contexts();
 
         public override IStatement AfterCompose(IStatement statement)
-            => statement.GetType() != typeof(xApiStatement) ? statement : AfterComposeXApi(statement as xApiStatement);
+            => statement.GetType() != typeof(xApiStatement) ? statement : AfterCompose(statement as xApiStatement);
 
-        protected abstract xApiStatement AfterComposeXApi(xApiStatement statement);
+        protected abstract xApiStatement AfterCompose(xApiStatement statement);
     }
 }

@@ -13,13 +13,14 @@ namespace OmiLAXR.xAPI.Examples
             
         }
 
-        protected override xApiStatement AfterComposeXApi(xApiStatement statement)
+        protected override xApiStatement AfterCompose(xApiStatement statement)
         {
             // change all clicked verbs by interacted
             if (statement.MatchKeys("clicked", "uiElement"))
             {
                 DebugLog.xAPI.Print($"Matches keys 'clicked' and 'uiElement': {statement}");
-                statement.Verb(xapi.virtualReality.verbs.interacted);
+                statement.Verb(xapi.virtualReality.verbs.interacted)
+                    .ChangedBy("Sergej G.", "goerzen@informatik.rwth-aachen.de");
                 DebugLog.xAPI.Print($"Exchanged 'clicked' by 'interacted': {statement}");
             }
 
@@ -27,7 +28,8 @@ namespace OmiLAXR.xAPI.Examples
             if (statement.GetActivity().MatchesPath("virtualReality.activities.uiElement"))
             {
                 DebugLog.xAPI.Print($"Matches path 'virtualReality.activities.uiElement': {statement}");
-                statement.WithExtension(xapi.generic.extensions.activity.color("red"));
+                statement.WithExtension(xapi.generic.extensions.activity.color("red"))
+                    .ChangedBy("Sergej G.", "goerzen@informatik.rwth-aachen.de");
                 DebugLog.xAPI.Print($"Added color 'red': {statement}");
             }
             
@@ -35,7 +37,8 @@ namespace OmiLAXR.xAPI.Examples
             if (statement.HasExtension("virtualReality.extensions.activity.uiElementValue"))
             {
                 DebugLog.xAPI.Print($"Has extension 'virtualReality.extensions.activity.uiElementValue': {statement}");
-                statement.WithExtension(xapi.virtualReality.extensions.activity.uiElementValue("exchanged"));
+                statement.WithExtension(xapi.virtualReality.extensions.activity.uiElementValue("exchanged"))
+                    .ChangedBy("Sergej G.", "goerzen@informatik.rwth-aachen.de");
                 DebugLog.xAPI.Print($"Exchanged 'virtualReality.extensions.activity.uiElementValue' to 'exchanged': {statement}");
             }
             
@@ -43,7 +46,8 @@ namespace OmiLAXR.xAPI.Examples
             if (statement.HasExtension("virtualReality.extensions.activity.uiElementMinValue"))
             {
                 DebugLog.xAPI.Print($"Has extension 'virtualReality.extensions.activity.uiElementMinValue': {statement}");
-                statement.DropExtension("virtualReality.extensions.activity.uiElementMinValue");
+                statement.DropExtension("virtualReality.extensions.activity.uiElementMinValue")
+                    .ChangedBy("Sergej G.", "goerzen@informatik.rwth-aachen.de");
                 DebugLog.xAPI.Print($"Dropped extension by path 'virtualReality.extensions.activity.uiElementMinValue': {statement}");
             }
             

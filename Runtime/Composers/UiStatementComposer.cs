@@ -1,3 +1,4 @@
+using OmiLAXR.Composers;
 using OmiLAXR.Extensions;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
@@ -5,11 +6,13 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / UI Statement Composer (xAPI)")]
-    public class UiStatementComposer : xApiStatementComposer<UiTrackingBehaviour>
+    public sealed class UiStatementComposer : xApiStatementComposer<UiTrackingBehaviour>
     {
+        protected override Author GetAuthor()
+            => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(UiTrackingBehaviour tb)
         {
-            trackingBehaviour.OnClickedButton += (_, button) =>
+            tb.OnClickedButton += (_, button) =>
             {
                 var buttonName = button.gameObject.GetTrackingName();
                 var text = button.GetTextOrDefault();
@@ -23,7 +26,7 @@ namespace OmiLAXR.xAPI.Composers
                 
                 SendStatement(statement);
             };
-            trackingBehaviour.OnChangedSlider += (_, slider, newValue) =>
+            tb.OnChangedSlider += (_, slider, newValue) =>
             {
                 var maxValue = slider.maxValue;
                 var minValue = slider.minValue;

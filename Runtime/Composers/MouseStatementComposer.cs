@@ -1,11 +1,15 @@
+using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.Learner;
+using OmiLAXR.xAPI.Actors;
 using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Statement Composer (xAPI)")]
-    public class MouseStatementComposer : xApiStatementComposer<MouseTrackingBehaviour>
+    public sealed class MouseStatementComposer : xApiStatementComposer<MouseTrackingBehaviour>
     {
+        protected override Author GetAuthor()
+            => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(MouseTrackingBehaviour tb)
         {
             tb.OnClicked += (_, args) =>

@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 using OmiLAXR.Composers;
 using OmiLAXR.xAPI.Actors;
 using OmiLAXR.xAPI.Extensions;
@@ -12,27 +11,13 @@ namespace OmiLAXR.xAPI.Composers
     {
         public class ActorRole
         {
-            // internal xAPI_Actor[] _members;
-            // internal xAPI_Actor _actor;
-            // internal bool IsGroup => false;
-            // internal xAPI_Actor? _instructor = null;
-            // internal xAPI_Actor? _team = null;
-            //
-            // public ActorRole()
-            // {
-            // }
-            //
-            // public ActorRole(xAPI_Actor group, xAPI_Actor[] members)
-            // {
-            //     _actor = group;
-            //     _members = members;
-            // }
-
             internal readonly Actor _actor;
+            internal readonly Author _authority;
 
-            public ActorRole(Actor actor)
+            public ActorRole(Actor actor, Author author)
             {
                 _actor = actor;
+                _authority = author;
             }
             
             public ActorRole(ActorGroup group)
@@ -51,11 +36,12 @@ namespace OmiLAXR.xAPI.Composers
         private xAPI_Activity _activity;
         private xAPI_Actor _actor;
         private xAPI_Actor? _instructor;
+        private xAPI_Actor _authority;
         private xAPI_Actor? _team;
 
-        private xAPI_Extensions_Activity _activityExtensions = new xAPI_Extensions_Activity();
-        private xAPI_Extensions_Context _contextExtensions = new xAPI_Extensions_Context();
-        private xAPI_Extensions_Result _resultExtensions = new xAPI_Extensions_Result();
+        private readonly xAPI_Extensions_Activity _activityExtensions = new xAPI_Extensions_Activity();
+        private readonly xAPI_Extensions_Context _contextExtensions = new xAPI_Extensions_Context();
+        private readonly xAPI_Extensions_Result _resultExtensions = new xAPI_Extensions_Result();
 
         public xAPI_Extensions_Activity GetActivityExtensions() => _activityExtensions;
         public xAPI_Extensions_Context GetContextExtensions() => _contextExtensions;
@@ -64,17 +50,18 @@ namespace OmiLAXR.xAPI.Composers
         public xAPI_Verb GetVerb() => _verb;
         public xAPI_Actor GetActor() => _actor;
         public xAPI_Actor? GetTeam() => _team;
-        [CanBeNull] public Score GetScore() => _score;
+        public Score GetScore() => _score;
         public bool? GetSuccess() => _success;
         public bool? GetCompletion() => _completion;
-        [CanBeNull] public string GetResponse() => _response;
+        public string GetResponse() => _response;
         public xAPI_Actor? GetInstructor() => _instructor;
+        public xAPI_Actor GetAuthority() => _authority;
         public readonly DateTime CreatedAt = DateTime.Now;
         
-        [CanBeNull] private Score _score;
+        private Score _score = null;
         private bool? _success = null;
         private bool? _completion = null;
-        [CanBeNull] private string _response = null;
+        private string _response = null;
 
         private bool _isDiscarded;
         public bool IsDiscarded() => _isDiscarded;
@@ -169,6 +156,12 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement WithInstructor(Instructor instructor)
         {
             _instructor = instructor.ToXAPIActor();
+            return this;
+        }
+
+        public xApiStatement ChangedBy(string name, string email)
+        {
+            _authority = new xAPI_Actor(name, email);
             return this;
         }
         
@@ -300,6 +293,7 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement(ActorRole actor, xAPI_Verb verb)
         {
             _actor = actor._actor.ToXAPIActor();
+            _authority = new xAPI_Actor(actor._authority.Name, actor._authority.Email);
             _verb = verb;
             _contextExtensions = new xAPI_Extensions_Context();
             _resultExtensions = new xAPI_Extensions_Result();

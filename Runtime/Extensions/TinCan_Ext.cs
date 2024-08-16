@@ -29,7 +29,7 @@ namespace OmiLAXR.xAPI.Extensions
                 // Statement Meta
                 timestamp = s.CreatedAt,
                 version = tc.TCAPIVersion.latest(),
-                // Todo authority
+                authority = s.GetAuthority().ToTinCanAgent(),
                 // Actor
                 actor = s.GetActor().ToTinCanAgent(),
                 // Todo: group
