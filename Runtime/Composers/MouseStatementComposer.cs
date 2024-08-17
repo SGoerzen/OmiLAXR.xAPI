@@ -1,6 +1,5 @@
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.Learner;
-using OmiLAXR.xAPI.Actors;
 using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
