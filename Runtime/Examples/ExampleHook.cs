@@ -6,7 +6,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Examples
 {
     [AddComponentMenu("OmiLAXR / 5) Hooks / Example Hook (xAPI)")]
-    public class ExampleHook : xApiStatementHook
+    public class ExampleHook : xApiHook
     {
         private void Start()
         {

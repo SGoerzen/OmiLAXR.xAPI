@@ -7,8 +7,8 @@ using xAPI.Registry;
 
 namespace OmiLAXR.xAPI.Hooks
 {
-    [AddComponentMenu("OmiLAXR / 5) Hooks / xAPI Statement Hook")]
-    public abstract class xApiStatementHook : StatementHook
+    [AddComponentMenu("OmiLAXR / 5) Hooks / xAPI Hook")]
+    public abstract class xApiHook : Hook
     {
         protected readonly xAPI_Contexts xapi = new xAPI_Contexts();
 

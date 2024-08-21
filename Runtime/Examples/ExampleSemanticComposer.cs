@@ -9,7 +9,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Examples
 {
     [AddComponentMenu("OmiLAXR / 4.1) Higher Composers / Example Semantic Composer (xAPI)")]
-    public class ExampleSemanticComposer : xApiStatementSemanticComposer<LearnerPipeline>
+    public class ExampleSemanticComposer : xApiSemanticComposer<LearnerPipeline>
     {
         protected override Author GetAuthor()
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");

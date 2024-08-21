@@ -6,7 +6,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / System Statement Composer (xAPI)")]
-    public sealed class SystemStatementComposer : xApiStatementComposer<SystemTrackingBehaviour>
+    public sealed class SystemComposer : XApiComposer<SystemTrackingBehaviour>
     {
         protected override Author GetAuthor()
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");

@@ -3,7 +3,7 @@ using xAPI.Registry;
 
 namespace OmiLAXR.xAPI.Composers.HigherComposers
 {
-    public abstract class xApiStatementSemanticComposer<TActorOfPipeline> : HigherStatementComposer<xApiStatement>
+    public abstract class xApiSemanticComposer<TActorOfPipeline> : HigherComposer<xApiStatement>
         where TActorOfPipeline : Pipeline
     {
         protected readonly xAPI_Contexts xapi = new xAPI_Contexts();
