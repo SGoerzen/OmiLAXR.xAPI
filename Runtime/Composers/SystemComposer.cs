@@ -12,23 +12,23 @@ namespace OmiLAXR.xAPI.Composers
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(SystemTrackingBehaviour tb)
         {
-            tb.OnGameStarted += _ =>
+            tb.OnGameStarted.AddHandler(_ =>
             {
                 var statement = actor.Does(xapi.systemControl.verbs.started)
                     .Activity(xapi.systemControl.activities.game)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
                 
                 SendStatement(statement);
-            };
+            });
 
-            tb.OnGameQuit += _ =>
+            tb.OnGameQuit.AddHandler(_ =>
             {
                 var statement = actor.Does(xapi.systemControl.verbs.ended)
                     .Activity(xapi.systemControl.activities.game)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
                 
                 SendStatement(statement);
-            };
+            });
         }
     }
 }

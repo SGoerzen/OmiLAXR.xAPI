@@ -11,16 +11,18 @@ namespace OmiLAXR.xAPI.Composers
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(MouseTrackingBehaviour tb)
         {
-            tb.OnClicked += (_, args) =>
+            print("BIND STMT");
+            tb.OnClicked.AddHandler((_, args) =>
             {
+                print("CLICK");
                 var statement = actor.Does(xapi.generic.verbs.clicked)
                     .Activity(xapi.generic.activities.mouse, 
                         xapi.generic.extensions.activity
                             .mouseButton(args.mouseButton)
                             .mousePosition(args.mousePosition));
                 SendStatement(statement);
-            };
-            tb.OnPressedDown += (_, args) =>
+            });
+            tb.OnPressedDown.AddHandler((_, args) =>
             {
                 var statement = actor.Does(xapi.generic.verbs.pressed)
                     .Activity(xapi.generic.activities.mouse, 
@@ -28,8 +30,8 @@ namespace OmiLAXR.xAPI.Composers
                             .mouseButton(args.mouseButton)
                             .mousePosition(args.mousePosition));
                 SendStatement(statement);
-            };
-            tb.OnScrolledWheel += (_, args, value) =>
+            });
+            tb.OnScrolledWheel.AddHandler((_, args, value) =>
             {
                 var statement = actor.Does(xapi.generic.verbs.scrolled)
                     .Activity(xapi.generic.activities.mouse, 
@@ -38,14 +40,14 @@ namespace OmiLAXR.xAPI.Composers
                             .mousePosition(args.mousePosition)
                             .scrollValue(value));
                 SendStatement(statement);
-            };
-            tb.OnMousePositionChanged += (_, pos) =>
+            });
+            tb.OnMousePositionChanged.AddHandler((_, pos) =>
             {
                 var statement = actor.Does(xapi.generic.verbs.moved)
                     .Activity(xapi.generic.activities.mouse)
                     .WithExtension(xapi.generic.extensions.activity.mousePosition(pos));
                 SendStatement(statement);
-            };
+            });
         }
     }
 }

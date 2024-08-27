@@ -12,13 +12,13 @@ namespace OmiLAXR.xAPI.Composers
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(GameObjectsStateTrackingBehaviour tb)
         {
-            tb.OnDestroyedGameObject += (_, o) =>
+            tb.OnDestroyedGameObject.AddHandler((_tb, _sender, go) =>
             {
                 var statement = actor.Does(xapi.virtualReality.verbs.removed)
                     .Activity(xapi.virtualReality.activities.vrObject)
-                    .WithExtension(xapi.virtualReality.extensions.activity.vrObjectName(o.name));
+                    .WithExtension(xapi.virtualReality.extensions.activity.vrObjectName(go.name));
                 SendStatement(statement);
-            };
+            });
         }
     }
 }

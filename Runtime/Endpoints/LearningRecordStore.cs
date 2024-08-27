@@ -60,7 +60,6 @@ namespace OmiLAXR.xAPI.Endpoints
             // Print error message to know more about on debug
             DebugLog.xAPI.Error($"Error Message: {resp.errMsg}, Http Error: {resp.httpException}");
             return TransferCode.Error;
-
         }
     }
 }

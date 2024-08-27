@@ -12,7 +12,7 @@ namespace OmiLAXR.xAPI.Composers
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(UiTrackingBehaviour tb)
         {
-            tb.OnClickedButton += (_, button) =>
+            tb.OnClickedButton.AddHandler((_, button) =>
             {
                 var buttonName = button.gameObject.GetTrackingName();
                 var text = button.GetTextOrDefault();
@@ -25,8 +25,8 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.virtualReality.activities.uiElement);
                 
                 SendStatement(statement);
-            };
-            tb.OnChangedSlider += (_, slider, newValue) =>
+            });
+            tb.OnChangedSlider.AddHandler((_, slider, newValue) =>
             {
                 var maxValue = slider.maxValue;
                 var minValue = slider.minValue;
@@ -42,7 +42,7 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.virtualReality.activities.uiElement);
                 
                 SendStatement(statement);
-            };
+            });
         }
     }
 }
