@@ -11,10 +11,8 @@ namespace OmiLAXR.xAPI.Composers
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(MouseTrackingBehaviour tb)
         {
-            print("BIND STMT");
             tb.OnClicked.AddHandler((_, args) =>
             {
-                print("CLICK");
                 var statement = actor.Does(xapi.generic.verbs.clicked)
                     .Activity(xapi.generic.activities.mouse, 
                         xapi.generic.extensions.activity
