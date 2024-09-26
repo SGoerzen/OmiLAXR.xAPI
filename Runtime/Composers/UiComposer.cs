@@ -2,6 +2,7 @@ using OmiLAXR.Composers;
 using OmiLAXR.Extensions;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace OmiLAXR.xAPI.Composers
 {
@@ -30,7 +31,7 @@ namespace OmiLAXR.xAPI.Composers
             {
                 var maxValue = slider.maxValue;
                 var minValue = slider.minValue;
-                var sliderName = slider.name;
+                var sliderName = slider.GetTrackingName();
                 
                 var statement = actor.Does(xapi.generic.verbs.clicked)
                     .WithExtension(xapi.virtualReality.extensions.activity
@@ -42,6 +43,19 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.virtualReality.activities.uiElement);
                 
                 SendStatement(statement);
+            });
+            tb.OnChangedDropdown.AddHandler((_, dropdown, newValue) =>
+            {
+                var value = dropdown.options[newValue].text;
+                var stmt = actor.Does(xapi.generic.verbs.changed)
+                    .WithExtension(xapi.virtualReality.extensions.activity
+                        .uiElementValue(value)
+                        // add .uiElementOptions([...])
+                        .uiElementType("dropdown")
+                        .vrObjectName(dropdown.GetTrackingName()))
+                    .Activity(xapi.virtualReality.activities.uiElement);
+                
+                SendStatement(stmt);
             });
         }
     }
