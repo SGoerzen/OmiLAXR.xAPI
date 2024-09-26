@@ -50,7 +50,9 @@ namespace OmiLAXR.xAPI.Composers
                 var stmt = actor.Does(xapi.generic.verbs.changed)
                     .WithExtension(xapi.virtualReality.extensions.activity
                         .uiElementValue(value)
-                        // add .uiElementOptions([...])
+                        .uiElementMinValue(0)
+                        .uiElementMaxValue(dropdown.options.Count)
+                        // todo: add .uiElementOptions([...])
                         .uiElementType("dropdown")
                         .vrObjectName(dropdown.GetTrackingName()))
                     .Activity(xapi.virtualReality.activities.uiElement);
