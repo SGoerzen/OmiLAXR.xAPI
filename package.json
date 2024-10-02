@@ -1,6 +1,6 @@
 {
   "name": "com.rwth.unity.omilaxr.xapi",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "displayName": "OmiLAXR.xAPI",
   "description": "This is a package for OmiLAXR for enabling xAPI.",
   "unity": "2021.3",
@@ -10,7 +10,7 @@
   "licensesUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxrv2.xapi/-/blob/main/LICENSE",
   "homepage": "https://omilaxr.dev/",
   "dependencies": {
-    "com.rwth.unity.omilaxr": "2.0.0",
+    "com.rwth.unity.omilaxr": "2.0.1",
     "com.unity.nuget.newtonsoft-json": "3.0.2"
   },
   "keywords": [

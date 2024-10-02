@@ -54,6 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4067064354450214901, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+    - {fileID: 5591463797965487429, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -68,9 +69,6 @@ PrefabInstance:
       addedObject: {fileID: 9181553068461224833}
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2094842324383977829}
-    - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6458040404535161818}
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
@@ -78,9 +76,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9153256989481736829}
-    - targetCorrespondingSourceObject: {fileID: 3247022003218735948, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5352956201950037937}
     - targetCorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7860620081402875794}
@@ -125,41 +120,11 @@ MonoBehaviour:
   statementIdUri: https://xapi.elearn.rwth-aachen.de/definitions/
   instructor: {fileID: 5194246650116706146}
   team: {fileID: 9181553068461224833}
---- !u!1 &1373295615158203779 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3247022003218735948, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
-  m_PrefabInstance: {fileID: 4467940648353388239}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5352956201950037937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1373295615158203779}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ffc6007b1e44c01ad3fea2220caaff5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1949422813583137368 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
   m_PrefabInstance: {fileID: 4467940648353388239}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2094842324383977829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1949422813583137368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0a3b7a70d114f62a4e798fb4da71021, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  trackingBehaviour: {fileID: 0}
 --- !u!114 &6458040404535161818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,7 +181,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d16cee1a78b54bd38a0d05afbeb74634, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  composers: []
   statementIdUri: https://xapi.elearn.rwth-aachen.de/definitions/
 --- !u!114 &5194246650116706146
 MonoBehaviour:

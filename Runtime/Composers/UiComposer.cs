@@ -2,12 +2,11 @@ using OmiLAXR.Composers;
 using OmiLAXR.Extensions;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / UI Statement Composer (xAPI)")]
-    public sealed class UiComposer : XApiComposer<UiTrackingBehaviour>
+    public sealed class UiComposer : xApiComposer<UiTrackingBehaviour>
     {
         protected override Author GetAuthor()
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");

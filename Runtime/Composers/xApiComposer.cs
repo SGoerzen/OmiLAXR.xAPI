@@ -4,7 +4,7 @@ using xAPI.Registry;
 
 namespace OmiLAXR.xAPI.Composers
 {
-    public abstract class XApiComposer<T> : BindedComposer<T>
+    public abstract class xApiComposer<T> : BindedComposer<T>
         where T : TrackingBehaviour
     {
         /// <summary>

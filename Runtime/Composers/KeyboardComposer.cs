@@ -5,7 +5,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Keyboard Statement Composer (xAPI)")]
-    public class KeyboardComposer : XApiComposer<KeyboardTrackingBehaviour>
+    public class KeyboardComposer : xApiComposer<KeyboardTrackingBehaviour>
     {
         protected override Author GetAuthor()
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");

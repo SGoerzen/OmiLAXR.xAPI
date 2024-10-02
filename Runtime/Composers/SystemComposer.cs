@@ -1,12 +1,11 @@
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.System;
-using OmiLAXR.xAPI.Actors;
 using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / System Statement Composer (xAPI)")]
-    public sealed class SystemComposer : XApiComposer<SystemTrackingBehaviour>
+    public sealed class SystemComposer : xApiComposer<SystemTrackingBehaviour>
     {
         protected override Author GetAuthor()
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");

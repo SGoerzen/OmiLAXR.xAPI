@@ -1,12 +1,11 @@
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.System;
-using OmiLAXR.xAPI.Actors;
 using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Statement Composer (xAPI)")]
-    public sealed class GameObjectStateComposer : XApiComposer<GameObjectsStateTrackingBehaviour>
+    public sealed class GameObjectStateComposer : xApiComposer<GameObjectsStateTrackingBehaviour>
     {
         protected override Author GetAuthor()
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
