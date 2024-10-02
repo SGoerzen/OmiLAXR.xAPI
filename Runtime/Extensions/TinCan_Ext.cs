@@ -35,8 +35,8 @@ namespace OmiLAXR.xAPI.Extensions
                 // Todo: group
                 // Verb
                 verb = s.GetVerb().ToTinCanVerb(statementUri),
-                // Activity
-                target = s.GetActivity().ToTinCanActivity(statementUri),
+                // Activity + Activity Extension
+                target = s.GetActivity().ToTinCanActivity(statementUri, s.GetActivityExtensions()),
                 // Context
                 context = s.GetContextExtensions().ToTinCanContext(statementUri, s.GetInstructor(), s.GetTeam()),
                 // Result
@@ -98,11 +98,11 @@ namespace OmiLAXR.xAPI.Extensions
             var a = new tc.Activity
             {
                 id = activity.CreateValidId(uri), // todo: combine with type
-                definition = activity.ToTinCanActivityDefinition()
+                definition = activity.ToTinCanActivityDefinition(),
             };
 
             // todo!
-            a.definition.type = null;
+            //a.definition.type = null;
 
             a.definition.extensions = extensions?.ToTinCanExtensions(uri);
 
