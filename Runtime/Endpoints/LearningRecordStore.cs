@@ -10,7 +10,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Endpoints
 {
     [AddComponentMenu("OmiLAXR / 6) Endpoints / Learning Record Store (LRS for xAPI)")]
-    public class LearningRecordStore : Endpoint
+    public class LearningRecordStore : BasicAuthEndpoint
     {
         private string tempFolder => System.IO.Path.Combine(System.IO.Path.GetTempPath(), "OmiLAXR.xAPI");
         
