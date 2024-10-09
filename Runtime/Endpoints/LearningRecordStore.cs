@@ -10,21 +10,21 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Endpoints
 {
     [AddComponentMenu("OmiLAXR / 6) Endpoints / Learning Record Store (LRS for xAPI)")]
+    [DefaultExecutionOrder(1)]
     public class LearningRecordStore : BasicAuthEndpoint
     {
-        private string tempFolder => System.IO.Path.Combine(System.IO.Path.GetTempPath(), "OmiLAXR.xAPI");
-        
         [Tooltip("xAPI Base URL")]
         public string statementIdUri = "https://xapi.elearn.rwth-aachen.de/definitions/";
         
-        private RemoteLRS _remoteLRS;
+        private RemoteLRS _remoteLrs;
         
         public Instructor instructor;
         public Team team;
-        
-        protected void Start()
+
+        protected override void OnEnable()
         {
-            _remoteLRS = new RemoteLRS(credentials.endpoint, credentials.username, credentials.password);
+            _remoteLrs = new RemoteLRS(credentials.endpoint, credentials.username, credentials.password);
+            base.OnEnable();
         }
 
         /// <summary>
@@ -51,8 +51,11 @@ namespace OmiLAXR.xAPI.Endpoints
         {
            
             var stmt = statement as xApiStatement;
+            
+            
+            
             // Transfer single statement to LRS
-            var resp = _remoteLRS.SaveStatement(stmt.ToTinCanStatement(statementIdUri));
+            var resp = _remoteLrs.SaveStatement(stmt.ToTinCanStatement(statementIdUri));
 
             if (resp.success) 
                 return TransferCode.Success;
