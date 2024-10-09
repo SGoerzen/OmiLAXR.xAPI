@@ -38,6 +38,8 @@ namespace OmiLAXR.xAPI.Composers
         private xAPI_Actor? _instructor;
         private xAPI_Actor _authority;
         private xAPI_Actor? _team;
+        private string _language = "en";
+        private string _platform = "OmiLAXRv2";
 
         private readonly xAPI_Extensions_Activity _activityExtensions = new xAPI_Extensions_Activity();
         private readonly xAPI_Extensions_Context _contextExtensions = new xAPI_Extensions_Context();
@@ -50,10 +52,12 @@ namespace OmiLAXR.xAPI.Composers
         public xAPI_Verb GetVerb() => _verb;
         public xAPI_Actor GetActor() => _actor;
         public xAPI_Actor? GetTeam() => _team;
+        public string GetLanguage() => _language;
         public Score GetScore() => _score;
         public bool? GetSuccess() => _success;
         public bool? GetCompletion() => _completion;
         public string GetResponse() => _response;
+        public string GetPlatform() => _platform;
         public xAPI_Actor? GetInstructor() => _instructor;
         public xAPI_Actor GetAuthority() => _authority;
         public readonly DateTime CreatedAt = DateTime.Now;
@@ -143,22 +147,24 @@ namespace OmiLAXR.xAPI.Composers
             _team = team;
             return this;
         }
-        public xApiStatement WithTeam(Team team)
-        {
-            _team = team.ToXAPIActor();
-            return this;
-        }
         public xApiStatement WithInstructor(xAPI_Actor instructor)
         {
             _instructor = instructor;
             return this;
         }
-        public xApiStatement WithInstructor(Instructor instructor)
+        
+        public xApiStatement WithLanguage(string langCode)
         {
-            _instructor = instructor.ToXAPIActor();
+            _language = langCode;
             return this;
         }
 
+        public xApiStatement WithPlatform(string platform)
+        {
+            _platform = platform;
+            return this;
+        }
+        
         public xApiStatement ChangedBy(string name, string email)
         {
             _authority = new xAPI_Actor(name, email);

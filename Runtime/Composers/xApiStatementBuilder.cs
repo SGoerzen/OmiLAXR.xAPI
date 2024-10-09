@@ -162,9 +162,9 @@ namespace OmiLAXR.xAPI.Composers
         /// <param name="instructor"></param>
         /// <param name="team"></param>
         /// <returns></returns>
-        public Context CreateContext(string uri, xAPI_Extensions_Context extensions = null, xAPI_Actor? instructor = null, xAPI_Actor? team = null)
+        public TinCan.Context CreateContext(string uri, xAPI_Extensions_Context extensions = null, xAPI_Actor? instructor = null, xAPI_Actor? team = null)
         {
-            return new Context()
+            return new TinCan.Context()
             {
                 instructor = instructor.HasValue ? CreateAgent(instructor.Value) : null,
                 extensions = extensions?.ToTinCanExtensions(uri),

@@ -38,9 +38,9 @@ namespace OmiLAXR.xAPI.Extensions
                 // Activity + Activity Extension
                 target = s.GetActivity().ToTinCanActivity(statementUri, s.GetActivityExtensions()),
                 // Context
-                context = s.GetContextExtensions().ToTinCanContext(statementUri, s.GetInstructor(), s.GetTeam()),
+                context = s.GetContextExtensions().ToTinCanContext(statementUri, s.GetLanguage(), s.GetPlatform(), s.GetInstructor(), s.GetTeam()),
                 // Result
-                result = s.GetResultExtensions().ToTinCanResult(statementUri, s.GetScore(), s.GetCompletion(), s.GetSuccess(), s.GetResponse())
+                result = s.GetResultExtensions().ToTinCanResult(statementUri, s.GetScore(), s.GetCompletion(), s.GetSuccess(), s.GetResponse()),
             };
         }
         
@@ -54,7 +54,7 @@ namespace OmiLAXR.xAPI.Extensions
             };
         }
         
-        public static tc.Context ToTinCanContext(this xAPI_Extensions_Context extensions, string uri, xAPI_Actor? instructor = null, xAPI_Actor? team = null)
+        public static tc.Context ToTinCanContext(this xAPI_Extensions_Context extensions, string uri, string language, string platform, xAPI_Actor? instructor = null, xAPI_Actor? team = null)
         {
             return new tc.Context()
             {
@@ -62,6 +62,8 @@ namespace OmiLAXR.xAPI.Extensions
                 extensions = extensions?.ToTinCanExtensions(uri),
                 registration = null,
                 team = team?.ToTinCanAgent(),
+                language = language,
+                platform = platform
             };
         }
 

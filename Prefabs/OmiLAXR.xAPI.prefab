@@ -76,6 +76,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9153256989481736829}
+    - targetCorrespondingSourceObject: {fileID: 3247022003218735948, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8198222591091450625}
     - targetCorrespondingSourceObject: {fileID: 3687486509951000795, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7860620081402875794}
@@ -101,6 +104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   filename: credentials.json
+  targetEndpoint: {fileID: 0}
 --- !u!114 &9135528826683086705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,8 +122,23 @@ MonoBehaviour:
     username: 
     password: 
   statementIdUri: https://xapi.elearn.rwth-aachen.de/definitions/
-  instructor: {fileID: 5194246650116706146}
-  team: {fileID: 9181553068461224833}
+--- !u!1 &1373295615158203779 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3247022003218735948, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+  m_PrefabInstance: {fileID: 4467940648353388239}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8198222591091450625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373295615158203779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8de7af81ebf43e5bf57df24d978e319, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1949422813583137368 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
@@ -194,8 +213,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98f626ff777f41679a88ee506270542d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorName: Anonymous
-  actorEmail: anonymous@omilaxr.dev
+  instructorName: Instructor
+  instructorEmail: instructor@omilaxr.dev
 --- !u!114 &9181553068461224833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,5 +227,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 932e8525aa574080a885510da05d0b82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actorName: Anonymous
-  actorEmail: anonymous@omilaxr.dev
+  teamName: Team
+  teamEmail: team@omilaxr.dev

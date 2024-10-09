@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using OmiLAXR.Composers;
 using OmiLAXR.Endpoints;
-using OmiLAXR.xAPI.Actors;
 using OmiLAXR.xAPI.Composers;
 using OmiLAXR.xAPI.Extensions;
 using TinCan;
@@ -18,9 +17,6 @@ namespace OmiLAXR.xAPI.Endpoints
         
         private RemoteLRS _remoteLrs;
         
-        public Instructor instructor;
-        public Team team;
-
         protected override void OnEnable()
         {
             _remoteLrs = new RemoteLRS(credentials.endpoint, credentials.username, credentials.password);
@@ -49,13 +45,12 @@ namespace OmiLAXR.xAPI.Endpoints
 
         protected override TransferCode HandleSending(IStatement statement)
         {
-           
             var stmt = statement as xApiStatement;
-            
-            
+
+            var tinCanStatement = stmt.ToTinCanStatement(statementIdUri);
             
             // Transfer single statement to LRS
-            var resp = _remoteLrs.SaveStatement(stmt.ToTinCanStatement(statementIdUri));
+            var resp = _remoteLrs.SaveStatement(tinCanStatement);
 
             if (resp.success) 
                 return TransferCode.Success;
