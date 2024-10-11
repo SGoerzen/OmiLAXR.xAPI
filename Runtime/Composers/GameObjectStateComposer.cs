@@ -7,7 +7,7 @@ namespace OmiLAXR.xAPI.Composers
     [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Statement Composer (xAPI)")]
     public sealed class GameObjectStateComposer : xApiComposer<GameObjectsStateTrackingBehaviour>
     {
-        protected override Author GetAuthor()
+        public override Author GetAuthor()
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(GameObjectsStateTrackingBehaviour tb)
         {

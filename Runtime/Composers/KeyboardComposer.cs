@@ -7,7 +7,7 @@ namespace OmiLAXR.xAPI.Composers
     [AddComponentMenu("OmiLAXR / 4) Composers / Keyboard Statement Composer (xAPI)")]
     public class KeyboardComposer : xApiComposer<KeyboardTrackingBehaviour>
     {
-        protected override Author GetAuthor()
+        public override Author GetAuthor()
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(KeyboardTrackingBehaviour tb)
         {
