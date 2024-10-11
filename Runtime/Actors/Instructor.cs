@@ -1,7 +1,6 @@
-
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Actors
+namespace OmiLAXR.xAPI
 {
     /// <summary>
     /// Agents or Groups can also be included in the ‘context’ of a statement as an ‘instructor,’ leading to statements of the form “Brian (actor) learned xAPI from Ben (instructor).” 
