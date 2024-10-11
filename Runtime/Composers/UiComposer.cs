@@ -71,6 +71,18 @@ namespace OmiLAXR.xAPI.Composers
                 
                 SendStatement(stmt);
             });
+            tb.OnChangedInputField.AddHandler((_, inputFieldSelectable, value) =>
+            {
+                // inputFieldSelectable may be InputField or TMP_InputField
+                var stmt = actor.Does(xapi.generic.verbs.changed)
+                    .WithExtension(xapi.virtualReality.extensions.activity
+                        .uiElementValue(value)
+                        .uiElementType("inputField")
+                        .vrObjectName(inputFieldSelectable.GetTrackingName()))
+                    .Activity(xapi.virtualReality.activities.uiElement);
+                
+                SendStatement(stmt);
+            });
         }
     }
 }
