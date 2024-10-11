@@ -1,6 +1,7 @@
 using OmiLAXR.Context;
 using OmiLAXR.xAPI.Composers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace OmiLAXR.xAPI.Hooks
 {
@@ -25,8 +26,12 @@ namespace OmiLAXR.xAPI.Hooks
             }
 
             // add application name and version
+            var activeScene = SceneManager.GetActiveScene();
+            // Get the name of the active scene
+            var sceneName = activeScene.name;
+            statement.WithContext(xapi.seriousGames.extensions.context.game(Application.productName));
             statement.WithContext(xapi.generic.extensions.context
-                .learningScenario(Application.productName)
+                .learningScenario(sceneName)
                 .version(Application.version));
 
             return statement;
