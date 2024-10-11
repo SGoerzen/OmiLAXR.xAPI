@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace OmiLAXR.xAPI
 {
-    [AddComponentMenu("OmiLAXR / 0) Pipelines / xAPI Data Provider")]
+    [AddComponentMenu("OmiLAXR / 0) Data Providers / xAPI Data Provider")]
     public class xApiDataProvider : DataProvider
     {
         [Tooltip("xAPI Base URL")]
