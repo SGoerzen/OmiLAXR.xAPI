@@ -30,7 +30,6 @@ namespace OmiLAXR.xAPI.Composers
                 var maxValue = slider.maxValue;
                 var minValue = slider.minValue;
                 var sliderName = slider.GetTrackingName();
-                
                 var stmt = actor.Does(xapi.generic.verbs.clicked)
                     .WithExtension(xapi.virtualReality.extensions.activity
                         .uiElementValue(newValue)
@@ -41,15 +40,15 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.virtualReality.activities.uiElement);
                 SendStatement(stmt);
             });
-            tb.OnChangedDropdown.AddHandler((_, dropdown, newValue) =>
+            tb.OnChangedDropdown.AddHandler((_, dropdown, newValue, options) =>
             {
-                var value = dropdown.options[newValue].text;
+                var value = options[newValue];
                 var stmt = actor.Does(xapi.generic.verbs.changed)
                     .WithExtension(xapi.virtualReality.extensions.activity
                         .uiElementValue(value)
                         .uiElementMinValue(0)
-                        .uiElementMaxValue(dropdown.options.Count)
-                        // todo: add .uiElementOptions([...])
+                        .uiElementMaxValue(options.Length)
+                        // .uiElementOptions(options) // todo: add
                         .uiElementType("dropdown")
                         .vrObjectName(dropdown.GetTrackingName()))
                     .Activity(xapi.virtualReality.activities.uiElement);

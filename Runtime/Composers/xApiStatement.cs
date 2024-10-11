@@ -335,8 +335,9 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement(ActorRole actor, xAPI_Verb verb)
         {
             _actor = actor._actor.ToXAPIActor();
-            _members = actor._members.Select(s => s.ToXAPIActor()).ToList();
-            _team = actor._actor.team.ToXAPIActor();
+            if (actor._members != null)
+                _members = actor._members.Select(s => s.ToXAPIActor()).ToList();
+            _team = actor._actor.team?.ToXAPIActor();
             _authority = new xAPI_Actor(actor._authority.Name, actor._authority.Email);
             _verb = verb;
             _contextExtensions = new xAPI_Extensions_Context();
