@@ -58,6 +58,19 @@ namespace OmiLAXR.xAPI.Composers
                 
                 SendStatement(stmt);
             });
+            tb.OnChangedToggle.AddHandler((_, toggle, isChecked) =>
+            {
+                var stmt = actor.Does(xapi.generic.verbs.changed)
+                    .WithExtension(xapi.virtualReality.extensions.activity
+                        .uiElementValue(isChecked)
+                        .uiElementMinValue(false)
+                        .uiElementMaxValue(true)
+                        .uiElementType("toggle")
+                        .vrObjectName(toggle.GetTrackingName()))
+                    .Activity(xapi.virtualReality.activities.uiElement);
+                
+                SendStatement(stmt);
+            });
         }
     }
 }
