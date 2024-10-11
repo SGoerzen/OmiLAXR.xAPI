@@ -25,16 +25,15 @@ namespace OmiLAXR.xAPI.Extensions
         public static tc.Statement ToTinCanStatement(this xApiStatement s, string statementUri)
         {
             var customTimestamp = s.GetTimestamp();
-            var members = s.GetMembers();
             var actor = s.GetActor();
-            return new tc.Statement()
+            var stmt = new tc.Statement()
             {
                 // Statement Meta
                 timestamp = customTimestamp ?? s.CreatedAt,
                 version = tc.TCAPIVersion.latest(),
                 authority = s.GetAuthority().ToTinCanAgent(),
                 // Actor
-                actor = members.Length > 0 ? actor.ToTinCanAgentGroup(members) : actor.ToTinCanAgent(),
+                actor = s.IsGroup ? actor.ToTinCanAgentGroup(s.GetMembers()) : actor.ToTinCanAgent(),
                 // Verb
                 verb = s.GetVerb().ToTinCanVerb(statementUri),
                 // Activity + Activity Extension
@@ -44,6 +43,7 @@ namespace OmiLAXR.xAPI.Extensions
                 // Result
                 result = s.GetResultExtensions().ToTinCanResult(statementUri, s.GetScore(), s.GetCompletion(), s.GetSuccess(), s.GetResponse()),
             };
+            return stmt;
         }
         
         public static tc.Group ToTinCanGroup(this xAPI_Actor group, IEnumerable<xAPI_Actor> members)
