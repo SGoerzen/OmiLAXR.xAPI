@@ -1,6 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using OmiLAXR.Composers;
-using OmiLAXR.xAPI.Actors;
 using OmiLAXR.xAPI.Extensions;
 using TinCan;
 using xAPI.Registry;
@@ -13,16 +14,17 @@ namespace OmiLAXR.xAPI.Composers
         {
             internal readonly Actor _actor;
             internal readonly Author _authority;
+            internal readonly Actor[] _members;
+            internal bool IsGroup => _members.Length > 0;
 
             public ActorRole(Actor actor, Author author)
             {
                 _actor = actor;
                 _authority = author;
-            }
-            
-            public ActorRole(ActorGroup group)
-            {
-                throw new NotImplementedException();
+                if (actor.IsGroup)
+                {
+                    _members = ((ActorGroup)actor).GetMembers();
+                }
             }
             
             public xApiStatement Verb(xAPI_Verb verb)
@@ -35,20 +37,23 @@ namespace OmiLAXR.xAPI.Composers
         private xAPI_Verb _verb;
         private xAPI_Activity _activity;
         private xAPI_Actor _actor;
+        private List<xAPI_Actor> _members;
         private xAPI_Actor? _instructor;
         private xAPI_Actor _authority;
         private xAPI_Actor? _team;
         private string _language = "en";
         private string _platform = "OmiLAXRv2";
 
-        private readonly xAPI_Extensions_Activity _activityExtensions = new xAPI_Extensions_Activity();
-        private readonly xAPI_Extensions_Context _contextExtensions = new xAPI_Extensions_Context();
-        private readonly xAPI_Extensions_Result _resultExtensions = new xAPI_Extensions_Result();
+        private readonly xAPI_Extensions_Activity _activityExtensions;
+        private readonly xAPI_Extensions_Context _contextExtensions;
+        private readonly xAPI_Extensions_Result _resultExtensions;
 
         public xAPI_Extensions_Activity GetActivityExtensions() => _activityExtensions;
         public xAPI_Extensions_Context GetContextExtensions() => _contextExtensions;
         public xAPI_Extensions_Result GetResultExtensions() => _resultExtensions;
         public xAPI_Activity GetActivity() => _activity;
+        public xAPI_Actor[] GetMembers() => _members.ToArray();
+        public bool IsGroup => _members.Count > 0;
         public xAPI_Verb GetVerb() => _verb;
         public xAPI_Actor GetActor() => _actor;
         public xAPI_Actor? GetTeam() => _team;
@@ -60,12 +65,14 @@ namespace OmiLAXR.xAPI.Composers
         public string GetPlatform() => _platform;
         public xAPI_Actor? GetInstructor() => _instructor;
         public xAPI_Actor GetAuthority() => _authority;
+        public DateTime? GetTimestamp() => _timestamp;
         public readonly DateTime CreatedAt = DateTime.Now;
         
         private Score _score = null;
         private bool? _success = null;
         private bool? _completion = null;
         private string _response = null;
+        private DateTime? _timestamp = null;
 
         private bool _isDiscarded;
         public bool IsDiscarded() => _isDiscarded;
@@ -121,6 +128,12 @@ namespace OmiLAXR.xAPI.Composers
             return this;
         }
 
+        public xApiStatement WithTimestamp(DateTime timestamp)
+        {
+            _timestamp = timestamp;
+            return this;
+        }
+
         public void Discard()
         {
             _isDiscarded = true;
@@ -129,7 +142,7 @@ namespace OmiLAXR.xAPI.Composers
         /// <summary>
         /// Use only if you know what you do!
         /// </summary>
-        public xApiStatement ChangeActor(xAPI_Actor actor)
+        public xApiStatement ByActor(xAPI_Actor actor)
         {
             _actor = actor;
             return this;
@@ -137,7 +150,7 @@ namespace OmiLAXR.xAPI.Composers
         /// <summary>
         /// Use only if you know what you do!
         /// </summary>
-        public xApiStatement ChangeActor(Actor actor)
+        public xApiStatement ByActor(Actor actor)
         {
             _actor = actor.ToXAPIActor();
             return this;
@@ -162,6 +175,29 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement WithPlatform(string platform)
         {
             _platform = platform;
+            return this;
+        }
+
+        public xApiStatement DropGroup()
+        {
+            _members.Clear();
+            return this;
+        }
+
+        public xApiStatement AddToGroup(params xAPI_Actor[] actors)
+        {
+            _members.AddRange(actors);
+            return this;
+        }
+
+        public xApiStatement RemoveFromGroup(params xAPI_Actor[] actors)
+        {
+            foreach (var actor in actors)
+            {
+                var index = _members.FindIndex(o => o.Email == actor.Email && o.Name == actor.Name);
+                _members.RemoveAt(index);
+            }
+
             return this;
         }
         
@@ -299,10 +335,12 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement(ActorRole actor, xAPI_Verb verb)
         {
             _actor = actor._actor.ToXAPIActor();
+            _members = actor._members.Select(s => s.ToXAPIActor()).ToList();
             _authority = new xAPI_Actor(actor._authority.Name, actor._authority.Email);
             _verb = verb;
             _contextExtensions = new xAPI_Extensions_Context();
             _resultExtensions = new xAPI_Extensions_Result();
+            _activityExtensions = new xAPI_Extensions_Activity();
         }
 
         public override string ToString()

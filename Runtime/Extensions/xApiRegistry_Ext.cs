@@ -1,4 +1,3 @@
-using OmiLAXR.xAPI.Actors;
 using xAPI.Registry;
 
 namespace OmiLAXR.xAPI.Extensions
@@ -16,10 +15,6 @@ namespace OmiLAXR.xAPI.Extensions
         public static xAPI_Actor ToXAPIActor(this Team actor)
         {
             return new xAPI_Actor(actor.teamName, actor.teamEmail);
-        }
-        public static xAPI_Actor ToXAPIActor(this ActorGroup actor)
-        {
-            return new xAPI_Actor(actor.groupName, actor.groupEmail);
         }
     }
 }

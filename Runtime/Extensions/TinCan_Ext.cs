@@ -24,15 +24,17 @@ namespace OmiLAXR.xAPI.Extensions
 
         public static tc.Statement ToTinCanStatement(this xApiStatement s, string statementUri)
         {
+            var customTimestamp = s.GetTimestamp();
+            var members = s.GetMembers();
+            var actor = s.GetActor();
             return new tc.Statement()
             {
                 // Statement Meta
-                timestamp = s.CreatedAt,
+                timestamp = customTimestamp ?? s.CreatedAt,
                 version = tc.TCAPIVersion.latest(),
                 authority = s.GetAuthority().ToTinCanAgent(),
                 // Actor
-                actor = s.GetActor().ToTinCanAgent(),
-                // Todo: group
+                actor = members.Length > 0 ? actor.ToTinCanAgentGroup(members) : actor.ToTinCanAgent(),
                 // Verb
                 verb = s.GetVerb().ToTinCanVerb(statementUri),
                 // Activity + Activity Extension
@@ -103,9 +105,6 @@ namespace OmiLAXR.xAPI.Extensions
                 definition = activity.ToTinCanActivityDefinition(),
             };
 
-            // todo!
-            //a.definition.type = null;
-
             a.definition.extensions = extensions?.ToTinCanExtensions(uri);
 
             return a;
@@ -115,9 +114,18 @@ namespace OmiLAXR.xAPI.Extensions
         {
             return new tc.Agent
             {
-                
                 name = actor.Name,
                 mbox = "mailto:" + actor.Email
+            };
+        }
+        
+        public static tc.Group ToTinCanAgentGroup(this xAPI_Actor actor, xAPI_Actor[] members)
+        {
+            return new tc.Group()
+            {
+                name = actor.Name,
+                mbox = "mailto:" + actor.Email,
+                member = members.Select(m => m.ToTinCanAgent()).ToList()
             };
         }
         
