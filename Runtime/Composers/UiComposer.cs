@@ -83,6 +83,16 @@ namespace OmiLAXR.xAPI.Composers
                 
                 SendStatement(stmt);
             });
+            tb.OnChangedScrollbar.AddHandler((_, scrollbar, value) =>
+            {
+                var stmt = actor.Does(xapi.generic.verbs.changed)
+                    .WithExtension(xapi.virtualReality.extensions.activity
+                        .uiElementValue(value)
+                        .uiElementType("scrollbar")
+                        .vrObjectName(scrollbar))
+                    .Activity(xapi.virtualReality.activities.uiElement);
+                SendStatement(stmt);
+            });
         }
     }
 }
