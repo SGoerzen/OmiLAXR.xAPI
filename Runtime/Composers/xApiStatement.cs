@@ -37,7 +37,7 @@ namespace OmiLAXR.xAPI.Composers
         private xAPI_Verb _verb;
         private xAPI_Activity _activity;
         private xAPI_Actor _actor;
-        private List<xAPI_Actor> _members;
+        private List<xAPI_Actor> _members = new List<xAPI_Actor>();
         private xAPI_Actor? _instructor;
         private xAPI_Actor _authority;
         private xAPI_Actor? _team;

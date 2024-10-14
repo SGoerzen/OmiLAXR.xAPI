@@ -9,7 +9,6 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Endpoints
 {
     [AddComponentMenu("OmiLAXR / 6) Endpoints / Learning Record Store (LRS for xAPI)")]
-    [DefaultExecutionOrder(1)]
     public class LearningRecordStore : BasicAuthEndpoint
     {
         [Tooltip("xAPI Base URL")]
@@ -45,13 +44,16 @@ namespace OmiLAXR.xAPI.Endpoints
 
         protected override TransferCode HandleSending(IStatement statement)
         {
+            Debug.Log("HandleSending " + statement);
             var stmt = statement as xApiStatement;
+            Debug.Log("xApiStatement " + stmt);
 
             var tinCanStatement = stmt.ToTinCanStatement(statementIdUri);
-            
+            Debug.Log("tinCanStatement " + tinCanStatement);
+
             // Transfer single statement to LRS
             var resp = _remoteLrs.SaveStatement(tinCanStatement);
-
+            
             if (resp.success) 
                 return TransferCode.Success;
             
