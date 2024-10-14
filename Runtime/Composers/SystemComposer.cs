@@ -1,7 +1,6 @@
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.System;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace OmiLAXR.xAPI.Composers
 {
@@ -18,7 +17,7 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.systemControl.activities.game)
                     .WithTimestamp(timestamp)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                SendStatement(stmt);
+                SendStatement(stmt, true);
             });
 
             tb.OnQuitGame.AddHandler((_, timestamp) =>
@@ -27,7 +26,7 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.systemControl.activities.game)
                     .WithTimestamp(timestamp)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                SendStatement(stmt);
+                SendStatement(stmt, true);
             });
             
             tb.OnPausedGame.AddHandler((_, timestamp, isPaused) =>
@@ -37,7 +36,7 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.systemControl.activities.game)
                     .WithTimestamp(timestamp)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                SendStatement(stmt);
+                SendStatement(stmt, true);
             });
             
             tb.OnFocusedGame.AddHandler((_, timestamp, isFocused) =>

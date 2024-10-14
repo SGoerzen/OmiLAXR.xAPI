@@ -33,37 +33,27 @@ namespace OmiLAXR.xAPI.Extensions
                 version = tc.TCAPIVersion.latest(),
                 authority = s.GetAuthority().ToTinCanAgent(),
                 // Actor
-                actor = s.IsGroup ? actor.ToTinCanAgentGroup(s.GetMembers()) : actor.ToTinCanAgent(),
+                actor = s.IsInGroup ? actor.ToTinCanAgentGroup(s.GetGroupMembers()) : actor.ToTinCanAgent(),
                 // Verb
                 verb = s.GetVerb().ToTinCanVerb(statementUri),
                 // Activity + Activity Extension
                 target = s.GetActivity().ToTinCanActivity(statementUri, s.GetActivityExtensions()),
                 // Context
-                context = s.GetContextExtensions().ToTinCanContext(statementUri, s.GetLanguage(), s.GetPlatform(), s.GetInstructor(), s.GetTeam()),
+                context = s.GetContextExtensions().ToTinCanContext(statementUri, s.GetLanguage(), s.GetPlatform(), s.GetInstructor(), s.GetTeam(), s.GetTeamMembers()),
                 // Result
                 result = s.GetResultExtensions().ToTinCanResult(statementUri, s.GetScore(), s.GetCompletion(), s.GetSuccess(), s.GetResponse()),
             };
             return stmt;
         }
         
-        public static tc.Group ToTinCanGroup(this xAPI_Actor group, IEnumerable<xAPI_Actor> members)
-        {
-            return new tc.Group
-            {
-                name = group.Name,
-                mbox = "mailto:" + group.Email,
-                member = members.Select(a => a.ToTinCanAgent()).ToList()
-            };
-        }
-        
-        public static tc.Context ToTinCanContext(this xAPI_Extensions_Context extensions, string uri, string language, string platform, xAPI_Actor? instructor = null, xAPI_Actor? team = null)
+        public static tc.Context ToTinCanContext(this xAPI_Extensions_Context extensions, string uri, string language, string platform, xAPI_Actor? instructor = null, xAPI_Actor? team = null, xAPI_Actor[] teamMembers = null)
         {
             return new tc.Context()
             {
                 instructor = instructor?.ToTinCanAgent(),
                 extensions = extensions?.ToTinCanExtensions(uri),
                 registration = null,
-                team = team?.ToTinCanAgent(),
+                team = team?.ToTinCanAgentTeam(teamMembers),
                 language = language,
                 platform = platform
             };
@@ -108,6 +98,16 @@ namespace OmiLAXR.xAPI.Extensions
             a.definition.extensions = extensions?.ToTinCanExtensions(uri);
 
             return a;
+        }
+        
+        public static tc.Agent ToTinCanAgentTeam(this xAPI_Actor actor, xAPI_Actor[] members)
+        {
+            return new tc.Group()
+            {
+                name = actor.Name,
+                mbox = "mailto:" + actor.Email,
+                member = members.Select(m => m.ToTinCanAgent()).ToList()
+            };
         }
         
         public static tc.Agent ToTinCanAgent(this xAPI_Actor actor)

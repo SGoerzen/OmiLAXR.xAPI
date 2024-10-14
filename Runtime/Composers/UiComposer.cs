@@ -84,7 +84,7 @@ namespace OmiLAXR.xAPI.Composers
                     .WithExtension(xapi.virtualReality.extensions.activity
                         .uiElementValue(value)
                         .uiElementType("scrollbar")
-                        .vrObjectName(scrollbar))
+                        .vrObjectName(scrollbar.GetTrackingName()))
                     .Activity(xapi.virtualReality.activities.uiElement);
                 SendStatement(stmt);
             });

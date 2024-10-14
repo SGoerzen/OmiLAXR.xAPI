@@ -14,17 +14,19 @@ namespace OmiLAXR.xAPI.Composers
         {
             internal readonly Actor _actor;
             internal readonly Author _authority;
-            internal readonly Actor[] _members;
-            internal bool IsGroup => _members.Length > 0;
+            internal readonly Actor[] _groupMembers;
+            internal readonly Actor[] _teamMembers;
+            internal readonly Team _team;
 
             public ActorRole(Actor actor, Author author)
             {
                 _actor = actor;
                 _authority = author;
-                if (actor.IsGroup)
+                if (actor.IsGroupActor)
                 {
-                    _members = ((ActorGroup)actor).GetMembers();
+                    _groupMembers = ((ActorGroup)actor).GetMembers();
                 }
+                _team = actor.team;
             }
             
             public xApiStatement Verb(xAPI_Verb verb)
@@ -37,7 +39,8 @@ namespace OmiLAXR.xAPI.Composers
         private xAPI_Verb _verb;
         private xAPI_Activity _activity;
         private xAPI_Actor _actor;
-        private List<xAPI_Actor> _members = new List<xAPI_Actor>();
+        private List<xAPI_Actor> _groupMembers = new List<xAPI_Actor>();
+        private List<xAPI_Actor> _teamMembers = new List<xAPI_Actor>();
         private xAPI_Actor? _instructor;
         private xAPI_Actor _authority;
         private xAPI_Actor? _team;
@@ -52,11 +55,12 @@ namespace OmiLAXR.xAPI.Composers
         public xAPI_Extensions_Context GetContextExtensions() => _contextExtensions;
         public xAPI_Extensions_Result GetResultExtensions() => _resultExtensions;
         public xAPI_Activity GetActivity() => _activity;
-        public xAPI_Actor[] GetMembers() => _members.ToArray();
-        public bool IsGroup => _members.Count > 0;
+        public xAPI_Actor[] GetGroupMembers() => _groupMembers.ToArray();
+        public bool IsInGroup => _groupMembers.Count > 0;
         public xAPI_Verb GetVerb() => _verb;
         public xAPI_Actor GetActor() => _actor;
         public xAPI_Actor? GetTeam() => _team;
+        public xAPI_Actor[] GetTeamMembers() => _teamMembers.ToArray();
         public string GetLanguage() => _language;
         public Score GetScore() => _score;
         public bool? GetSuccess() => _success;
@@ -180,13 +184,13 @@ namespace OmiLAXR.xAPI.Composers
 
         public xApiStatement DropGroup()
         {
-            _members.Clear();
+            _groupMembers.Clear();
             return this;
         }
 
         public xApiStatement AddToGroup(params xAPI_Actor[] actors)
         {
-            _members.AddRange(actors);
+            _groupMembers.AddRange(actors);
             return this;
         }
 
@@ -194,8 +198,31 @@ namespace OmiLAXR.xAPI.Composers
         {
             foreach (var actor in actors)
             {
-                var index = _members.FindIndex(o => o.Email == actor.Email && o.Name == actor.Name);
-                _members.RemoveAt(index);
+                var index = _groupMembers.FindIndex(o => o.Email == actor.Email && o.Name == actor.Name);
+                _groupMembers.RemoveAt(index);
+            }
+
+            return this;
+        }
+        
+        public xApiStatement DropTeam()
+        {
+            _teamMembers.Clear();
+            return this;
+        }
+
+        public xApiStatement AddToTeam(params xAPI_Actor[] actors)
+        {
+            _teamMembers.AddRange(actors);
+            return this;
+        }
+
+        public xApiStatement RemoveFromTeam(params xAPI_Actor[] actors)
+        {
+            foreach (var actor in actors)
+            {
+                var index = _teamMembers.FindIndex(o => o.Email == actor.Email && o.Name == actor.Name);
+                _teamMembers.RemoveAt(index);
             }
 
             return this;
@@ -334,10 +361,17 @@ namespace OmiLAXR.xAPI.Composers
 
         public xApiStatement(ActorRole actor, xAPI_Verb verb)
         {
-            _actor = actor._actor.ToXAPIActor();
-            if (actor._members != null)
-                _members = actor._members.Select(s => s.ToXAPIActor()).ToList();
-            _team = actor._actor.team?.ToXAPIActor();
+            var a = actor._actor;
+            _actor = a.ToXAPIActor();
+            if (actor._groupMembers != null)
+                _groupMembers = actor._groupMembers.ToXAPIActors().ToList();
+            
+            if (a.HasTeam)
+            {
+                _team = a.team.ToXAPIActor();
+                _teamMembers = a.team.GetMembers().ToXAPIActors().ToList();
+            }
+            
             _authority = new xAPI_Actor(actor._authority.Name, actor._authority.Email);
             _verb = verb;
             _contextExtensions = new xAPI_Extensions_Context();

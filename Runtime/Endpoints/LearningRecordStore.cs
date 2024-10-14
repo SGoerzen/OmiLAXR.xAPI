@@ -44,12 +44,9 @@ namespace OmiLAXR.xAPI.Endpoints
 
         protected override TransferCode HandleSending(IStatement statement)
         {
-            Debug.Log("HandleSending " + statement);
             var stmt = statement as xApiStatement;
-            Debug.Log("xApiStatement " + stmt);
 
             var tinCanStatement = stmt.ToTinCanStatement(statementIdUri);
-            Debug.Log("tinCanStatement " + tinCanStatement);
 
             // Transfer single statement to LRS
             var resp = _remoteLrs.SaveStatement(tinCanStatement);
