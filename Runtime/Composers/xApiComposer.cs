@@ -5,7 +5,7 @@ using xAPI.Registry;
 namespace OmiLAXR.xAPI.Composers
 {
     public abstract class xApiComposer<T> : Composer<T>
-        where T : TrackingBehaviour
+        where T : PipelineComponent, ITrackingBehaviour
     {
         /// <summary>
         /// Who is responsible for the correctness of the statement.

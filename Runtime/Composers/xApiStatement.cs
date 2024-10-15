@@ -30,7 +30,6 @@ namespace OmiLAXR.xAPI.Composers
                 }
                 _team = actor.team;
                 _instructor = instructor;
-                Debug.Log(instructor);
             }
             
             public xApiStatement Verb(xAPI_Verb verb)

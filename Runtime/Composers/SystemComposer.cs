@@ -17,7 +17,7 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.systemControl.activities.game)
                     .WithTimestamp(timestamp)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                SendStatement(stmt, true);
+                SendStatementImmediate(stmt);
             });
 
             tb.OnQuitGame.AddHandler((_, timestamp) =>
@@ -26,7 +26,7 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.systemControl.activities.game)
                     .WithTimestamp(timestamp)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                SendStatement(stmt, true);
+                SendStatementImmediate(stmt);
             });
             
             tb.OnPausedGame.AddHandler((_, timestamp, isPaused) =>
@@ -36,7 +36,7 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.systemControl.activities.game)
                     .WithTimestamp(timestamp)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                SendStatement(stmt, true);
+                SendStatementImmediate(stmt);
             });
             
             tb.OnFocusedGame.AddHandler((_, timestamp, isFocused) =>
