@@ -25,6 +25,11 @@ namespace OmiLAXR.xAPI.Hooks
                 statement.WithPlatform(platform);
             }
 
+            if (FpsMonitor.Instance)
+            {
+                statement.WithContext(xapi.systemControl.extensions.context.fps(FpsMonitor.Instance.fps));
+            }
+
             // add application name and version
             var activeScene = SceneManager.GetActiveScene();
             // Get the name of the active scene
