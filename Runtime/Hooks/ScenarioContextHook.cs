@@ -1,3 +1,4 @@
+using System;
 using OmiLAXR.Context;
 using OmiLAXR.xAPI.Composers;
 using UnityEngine;
@@ -25,10 +26,15 @@ namespace OmiLAXR.xAPI.Hooks
                 statement.WithPlatform(platform);
             }
 
-            if (FpsMonitor.Instance)
+            if (FpsMonitor.Instance && FpsMonitor.Instance.enabled)
             {
                 // Todo: add when fps is in Registry
                 // statement.WithContext(xapi.systemControl.extensions.context.fps(FpsMonitor.Instance.fps));
+            }
+
+            if (Registration.Instance && Registration.Instance.enabled)
+            {
+                statement.WithRegistration(new Guid(Registration.Instance.uuid));
             }
 
             // add application name and version
