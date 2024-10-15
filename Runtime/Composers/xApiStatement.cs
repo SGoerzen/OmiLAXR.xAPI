@@ -4,6 +4,7 @@ using System.Linq;
 using OmiLAXR.Composers;
 using OmiLAXR.xAPI.Extensions;
 using TinCan;
+using UnityEngine;
 using xAPI.Registry;
 
 namespace OmiLAXR.xAPI.Composers
@@ -17,8 +18,9 @@ namespace OmiLAXR.xAPI.Composers
             internal readonly Actor[] _groupMembers;
             internal readonly Actor[] _teamMembers;
             internal readonly Team _team;
+            internal readonly Instructor _instructor;
 
-            public ActorRole(Actor actor, Author author)
+            public ActorRole(Actor actor, Author author, Instructor instructor = null)
             {
                 _actor = actor;
                 _authority = author;
@@ -27,6 +29,8 @@ namespace OmiLAXR.xAPI.Composers
                     _groupMembers = ((ActorGroup)actor).GetMembers();
                 }
                 _team = actor.team;
+                _instructor = instructor;
+                Debug.Log(instructor);
             }
             
             public xApiStatement Verb(xAPI_Verb verb)
@@ -69,6 +73,7 @@ namespace OmiLAXR.xAPI.Composers
         public string GetPlatform() => _platform;
         public xAPI_Actor? GetInstructor() => _instructor;
         public xAPI_Actor GetAuthority() => _authority;
+        public Guid? GetRegistration() => _registration;
         public DateTime? GetTimestamp() => _timestamp;
         public readonly DateTime CreatedAt = DateTime.Now;
         
@@ -77,6 +82,7 @@ namespace OmiLAXR.xAPI.Composers
         private bool? _completion = null;
         private string _response = null;
         private DateTime? _timestamp = null;
+        private Guid? _registration = null;
 
         private bool _isDiscarded;
         public bool IsDiscarded() => _isDiscarded;
@@ -179,6 +185,12 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement WithPlatform(string platform)
         {
             _platform = platform;
+            return this;
+        }
+
+        public xApiStatement WithRegistration(Guid uuid)
+        {
+            _registration = uuid;
             return this;
         }
 
@@ -370,6 +382,11 @@ namespace OmiLAXR.xAPI.Composers
             {
                 _team = a.team.ToXAPIActor();
                 _teamMembers = a.team.GetMembers().ToXAPIActors().ToList();
+            }
+
+            if (actor._instructor)
+            {
+                _instructor = actor._instructor.ToXAPIActor();
             }
             
             _authority = new xAPI_Actor(actor._authority.Name, actor._authority.Email);

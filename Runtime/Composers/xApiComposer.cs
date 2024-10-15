@@ -16,7 +16,7 @@ namespace OmiLAXR.xAPI.Composers
         protected override void Awake()
         {
             base.Awake();
-            actor = new xApiStatement.ActorRole(trackingBehaviour.GetActor(), GetAuthor());
+            actor = new xApiStatement.ActorRole(trackingBehaviour.GetActor(), GetAuthor(), trackingBehaviour.GetInstructor());
         }
 
         
