@@ -1,10 +1,12 @@
+using System.ComponentModel;
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.System;
 using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
-    [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Statement Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / Game Object State Composer (xAPI)")]
+    [Description("Creates statements:\n- actor removed vrObject with vrObjectName(name)")]
     public sealed class GameObjectStateComposer : xApiComposer<GameObjectsStateTrackingBehaviour>
     {
         public override Author GetAuthor()

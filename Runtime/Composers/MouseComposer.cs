@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Statement Composer (xAPI)")]
+    [Description("Creates statements:\n- actor pressed/released keyboard with keyboardButton(key)")]
     public sealed class MouseComposer : xApiComposer<MouseTrackingBehaviour>
     {
         public override Author GetAuthor()

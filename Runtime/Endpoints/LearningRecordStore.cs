@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using OmiLAXR.Composers;
 using OmiLAXR.Endpoints;
 using OmiLAXR.xAPI.Composers;
@@ -9,6 +10,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Endpoints
 {
     [AddComponentMenu("OmiLAXR / 6) Endpoints / Learning Record Store (LRS for xAPI)")]
+    [Description("Sends all received statements a Learning Record Store asynchronously.")]
     public class LearningRecordStore : BasicAuthEndpoint
     {
         [Tooltip("xAPI Base URL")]
