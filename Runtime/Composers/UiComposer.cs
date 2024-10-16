@@ -48,7 +48,7 @@ namespace OmiLAXR.xAPI.Composers
                         .uiElementValue(value)
                         .uiElementMinValue(0)
                         .uiElementMaxValue(options.Length)
-                        // .uiElementOptions(options) // todo: add
+                        .uiElementOptions(options)
                         .uiElementType("dropdown")
                         .vrObjectName(dropdown.GetTrackingName()))
                     .Activity(xapi.virtualReality.activities.uiElement);
