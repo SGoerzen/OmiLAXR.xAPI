@@ -129,8 +129,6 @@ namespace OmiLAXR.xAPI.Composers
             _verb = verb;
             return this;
         }
-        // public void Object(xAPI_Activity obj) {}
-
         public xApiStatement WithExtension(xAPI_Extensions_Activity activityExtensions)
         {
             _activityExtensions.AddRange(activityExtensions);

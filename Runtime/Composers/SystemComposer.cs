@@ -41,13 +41,12 @@ namespace OmiLAXR.xAPI.Composers
             
             tb.OnFocusedGame.AddHandler((_, timestamp, isFocused) =>
             {
-                // need to deploy to registry
-                //var verb = isFocused ? xapi.systemControl.verbs.focused : xapi.systemControl.verbs.unfocused;
-                //var stmt = actor.Does(verb)
-                //    .Activity(xapi.systemControl.activities.game)
-                //    .WithTimestamp(timestamp)
-                //    .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                //SendStatement(stmt);
+                var verb = isFocused ? xapi.systemControl.verbs.focused : xapi.systemControl.verbs.unfocused;
+                var stmt = actor.Does(verb)
+                    .Activity(xapi.systemControl.activities.game)
+                    .WithTimestamp(timestamp)
+                    .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
+                SendStatement(stmt);
             });
         }
     }

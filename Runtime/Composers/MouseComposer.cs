@@ -31,14 +31,13 @@ namespace OmiLAXR.xAPI.Composers
             });
             tb.OnScrolledWheel.AddHandler((_, args, value) =>
             {
-                // Todo: add again, when xAPI Registry entries are accepted
-                // var statement = actor.Does(xapi.generic.verbs.scrolled)
-                //     .Activity(xapi.generic.activities.mouse, 
-                //         xapi.generic.extensions.activity
-                //             .mouseButton(args.mouseButton)
-                //             .mousePosition(args.mousePosition)
-                //             .scrollValue(value));
-                // SendStatement(statement);
+                var statement = actor.Does(xapi.generic.verbs.scrolled)
+                    .Activity(xapi.generic.activities.mouse, 
+                        xapi.generic.extensions.activity
+                            .mouseButton(args.mouseButton)
+                            .mousePosition(args.mousePosition)
+                            .scrollValue(value));
+                SendStatement(statement);
             });
             tb.OnMousePositionChanged.AddHandler((_, pos) =>
             {
