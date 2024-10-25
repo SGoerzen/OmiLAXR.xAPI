@@ -393,6 +393,9 @@ namespace OmiLAXR.xAPI.Composers
             _activityExtensions = new xAPI_Extensions_Activity();
         }
 
+        public string ToDataStandardString()
+            => this.ToTinCanStatement("https://xapi.elearn.rwth-aachen.de/definitions/").ToJSON();
+
         public override string ToString()
             =>
                 $"[xApiStatement verb: {_verb}, activity: {_activity}, ext: {_activityExtensions}, ctx: {_contextExtensions}, result: {_resultExtensions}, score: {_score}, success: {_success}, completion: {_completion}]";
