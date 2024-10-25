@@ -39,20 +39,20 @@ namespace OmiLAXR.xAPI.Extensions
                 // Activity + Activity Extension
                 target = s.GetActivity().ToTinCanActivity(statementUri, s.GetActivityExtensions()),
                 // Context
-                context = s.GetContextExtensions().ToTinCanContext(statementUri, s.GetLanguage(), s.GetPlatform(), s.GetInstructor(), s.GetTeam(), s.GetTeamMembers()),
+                context = s.GetContextExtensions().ToTinCanContext(statementUri, s.GetLanguage(), s.GetPlatform(), s.GetInstructor(), s.GetTeam(), s.GetTeamMembers(), s.GetRegistration()),
                 // Result
                 result = s.GetResultExtensions().ToTinCanResult(statementUri, s.GetScore(), s.GetCompletion(), s.GetSuccess(), s.GetResponse()),
             };
             return stmt;
         }
         
-        public static tc.Context ToTinCanContext(this xAPI_Extensions_Context extensions, string uri, string language, string platform, xAPI_Actor? instructor = null, xAPI_Actor? team = null, xAPI_Actor[] teamMembers = null)
+        public static tc.Context ToTinCanContext(this xAPI_Extensions_Context extensions, string uri, string language, string platform, xAPI_Actor? instructor = null, xAPI_Actor? team = null, xAPI_Actor[] teamMembers = null, Guid? registration = null)
         {
             return new tc.Context()
             {
                 instructor = instructor?.ToTinCanAgent(),
                 extensions = extensions?.ToTinCanExtensions(uri),
-                registration = null,
+                registration = registration,
                 team = team?.ToTinCanAgentTeam(teamMembers),
                 language = language,
                 platform = platform

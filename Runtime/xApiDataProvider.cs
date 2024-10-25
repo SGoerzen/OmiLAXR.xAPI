@@ -5,7 +5,6 @@ namespace OmiLAXR.xAPI
     [AddComponentMenu("OmiLAXR / 0) Data Providers / xAPI Data Provider")]
     public class xApiDataProvider : DataProvider
     {
-        [Tooltip("xAPI Base URL")]
-        public string statementIdUri = "https://xapi.elearn.rwth-aachen.de/definitions/";
+        
     }
 }

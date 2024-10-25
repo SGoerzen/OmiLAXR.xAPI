@@ -14,7 +14,7 @@ namespace OmiLAXR.xAPI.Composers.HigherComposers
         protected virtual void Awake()
         {
             targetPipeline = GetPipeline<TActorOfPipeline>();
-            actor = new xApiStatement.ActorRole(targetPipeline.actor, GetAuthor());
+            actor = new xApiStatement.ActorRole(targetPipeline.actor, GetAuthor(), targetPipeline.instructor);
         }
     }
 }

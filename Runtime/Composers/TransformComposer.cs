@@ -1,9 +1,13 @@
+using System.ComponentModel;
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours;
 using OmiLAXR.xAPI.Composers;
+using UnityEngine;
 
 namespace OmiLAXR.xAPI
 {
+    [AddComponentMenu("OmiLAXR / 4) Composers / Transform Composer (xAPI)")]
+    [Description("Creates statements:\n- actor moved/rotated/scaled vrObject with vrObjectName(name) and result position, rotation, scale, startValue, endValue")]
     public class TransformComposer : xApiComposer<TransformTrackingBehaviour>
     {
         public override Author GetAuthor()

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.System;
 using UnityEngine;
@@ -5,6 +6,10 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / System Statement Composer (xAPI)")]
+    [Description("Creates statements:\n- actor started game with name(productName)" +
+                 "\n- actor ended game with name(productName)" +
+                 "\n- actor paused/resumed game with name(productName)" +
+                 "\n- actor focused/unfocused game with name(productName)")]
     public sealed class SystemComposer : xApiComposer<SystemTrackingBehaviour>
     {
         public override Author GetAuthor()
@@ -17,7 +22,7 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.systemControl.activities.game)
                     .WithTimestamp(timestamp)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                SendStatement(stmt, true);
+                SendStatementImmediate(stmt);
             });
 
             tb.OnQuitGame.AddHandler((_, timestamp) =>
@@ -26,7 +31,7 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.systemControl.activities.game)
                     .WithTimestamp(timestamp)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                SendStatement(stmt, true);
+                SendStatementImmediate(stmt);
             });
             
             tb.OnPausedGame.AddHandler((_, timestamp, isPaused) =>
@@ -36,18 +41,17 @@ namespace OmiLAXR.xAPI.Composers
                     .Activity(xapi.systemControl.activities.game)
                     .WithTimestamp(timestamp)
                     .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                SendStatement(stmt, true);
+                SendStatementImmediate(stmt);
             });
             
             tb.OnFocusedGame.AddHandler((_, timestamp, isFocused) =>
             {
-                // need to deploy to registry
-                //var verb = isFocused ? xapi.systemControl.verbs.focused : xapi.systemControl.verbs.unfocused;
-                //var stmt = actor.Does(verb)
-                //    .Activity(xapi.systemControl.activities.game)
-                //    .WithTimestamp(timestamp)
-                //    .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
-                //SendStatement(stmt);
+                var verb = isFocused ? xapi.systemControl.verbs.focused : xapi.systemControl.verbs.unfocused;
+                var stmt = actor.Does(verb)
+                    .Activity(xapi.systemControl.activities.game)
+                    .WithTimestamp(timestamp)
+                    .WithExtension(xapi.systemControl.extensions.activity.name(Application.productName));
+                SendStatement(stmt);
             });
         }
     }
