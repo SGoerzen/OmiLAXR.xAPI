@@ -31,7 +31,7 @@ namespace OmiLAXR.xAPI.Hooks
             if (FpsMonitor.Instance && FpsMonitor.Instance.enabled)
             {
                 // Todo: add when fps is in Registry
-                // statement.WithContext(xapi.systemControl.extensions.context.fps(FpsMonitor.Instance.fps));
+                statement.WithContext(xapi.systemControl.extensions.context.fps(FpsMonitor.Instance.fps));
             }
 
             if (Registration.Instance && Registration.Instance.enabled)
