@@ -11,18 +11,11 @@ namespace OmiLAXR.xAPI.Hooks
     {
         protected override xApiStatement AfterCompose(xApiStatement statement)
         {
+            var heartRateProvider = Get<HeartRateProvider>(statement);
             
-            if (HeartRateMonitor.Instance && HeartRateMonitor.Instance.enabled)
+            if (heartRateProvider && heartRateProvider.enabled)
             {
-                var provider = HeartRateMonitor.Instance.provider;
-                if (!provider)
-                {
-                    DebugLog.xAPI.Error("Cannot provider heart rate as no heart rate provider is assigned to the Heart Rate Monitor.");
-                }
-                else if (provider.enabled)
-                {
-                    statement.WithResult(xapi.ppm.extensions.result.heartRate(provider.GetHeartRate()));
-                }
+                statement.WithResult(xapi.ppm.extensions.result.heartRate(heartRateProvider.GetHeartRate()));
             }
 
             return statement;
