@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using OmiLAXR.Context;
-using OmiLAXR.Context.HeartRate;
 using OmiLAXR.xAPI.Composers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -33,20 +32,7 @@ namespace OmiLAXR.xAPI.Hooks
             {
                 statement.WithContext(xapi.systemControl.extensions.context.fps(FpsMonitor.Instance.fps));
             }
-
-            if (HeartRateMonitor.Instance && HeartRateMonitor.Instance.enabled)
-            {
-                var provider = HeartRateMonitor.Instance.provider;
-                if (!provider)
-                {
-                    DebugLog.xAPI.Error("Cannot provider heart rate as no heart rate provider is assigned to the Heart Rate Monitor.");
-                }
-                else if (provider.enabled)
-                {
-                    statement.WithContext(xapi.gestures.extensions.context.heartRate(provider.GetHeartRate()));
-                }
-            }
-
+            
             if (Registration.Instance && Registration.Instance.enabled)
             {
                 statement.WithRegistration(new Guid(Registration.Instance.uuid));

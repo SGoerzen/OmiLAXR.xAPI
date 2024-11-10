@@ -19,11 +19,13 @@ namespace OmiLAXR.xAPI.Composers
             internal readonly Actor[] _teamMembers;
             internal readonly Team _team;
             internal readonly Instructor _instructor;
+            internal readonly Pipeline _pipeline;
 
             public ActorRole(Actor actor, Author author, Instructor instructor = null)
             {
                 _actor = actor;
                 _authority = author;
+                _pipeline = actor.Pipeline;
                 if (actor.IsGroupActor)
                 {
                     _groupMembers = ((ActorGroup)actor).GetMembers();
@@ -75,6 +77,9 @@ namespace OmiLAXR.xAPI.Composers
         public Guid? GetRegistration() => _registration;
         public DateTime? GetTimestamp() => _timestamp;
         public readonly DateTime CreatedAt = DateTime.Now;
+
+        private PipelineInfo _senderPipelineInfo;
+        public PipelineInfo GetSenderPipelineInfo() => _senderPipelineInfo;
         
         private Score _score = null;
         private bool? _success = null;
@@ -391,6 +396,7 @@ namespace OmiLAXR.xAPI.Composers
             _contextExtensions = new xAPI_Extensions_Context();
             _resultExtensions = new xAPI_Extensions_Result();
             _activityExtensions = new xAPI_Extensions_Activity();
+            _senderPipelineInfo = new PipelineInfo(actor._pipeline);
         }
 
         public string ToDataStandardString()
