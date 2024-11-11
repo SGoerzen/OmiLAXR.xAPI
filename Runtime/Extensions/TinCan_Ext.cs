@@ -15,11 +15,19 @@ namespace OmiLAXR.xAPI.Extensions
             // Skip if there are no extensions
             if (jObject == null)
                 return;
+#if UNITY_2019 || UNITY_2020
+            foreach (var kvp in extensions)
+            {
+                var id = kvp.Key.CreateValidId(uri);
+                jObject.Add(id, kvp.Value == null ? "null" : kvp.Value.ToString());
+            }
+#else
             foreach (var (extension, value) in extensions)
             {
                 var id = extension.CreateValidId(uri);
                 jObject.Add(id, value == null ? "null" : value.ToString());
             }
+#endif
         }
 
         public static tc.Statement ToTinCanStatement(this xApiStatement s, string statementUri)

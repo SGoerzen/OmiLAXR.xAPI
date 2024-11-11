@@ -1,4 +1,3 @@
-
 using OmiLAXR.Composers;
 using OmiLAXR.Hooks;
 using OmiLAXR.xAPI.Composers;
