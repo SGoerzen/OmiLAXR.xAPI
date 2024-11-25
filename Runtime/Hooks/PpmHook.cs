@@ -11,7 +11,7 @@ namespace OmiLAXR.xAPI.Hooks
     {
         protected override xApiStatement AfterCompose(xApiStatement statement)
         {
-            var heartRateProvider = Get<HeartRateProvider>(statement);
+            var heartRateProvider = GetProvider<HeartRateProvider>(statement);
             
             if (heartRateProvider && heartRateProvider.enabled)
             {
