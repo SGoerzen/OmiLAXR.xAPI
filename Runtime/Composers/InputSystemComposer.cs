@@ -6,7 +6,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Input System Composer (OmiLAXR.xAPI)"),
-     Description("Creates statements:\n- actor pressed action with actionName(name)")]
+     Description("Creates statements:\n- actor pressed action with actionName(String)")]
     public class InputSystemComposer : xApiComposer<InputSystemTrackingBehaviour>
     {
         public override Author GetAuthor()

@@ -6,10 +6,10 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Statement Composer (xAPI)")]
-    [Description("Creates statements:\n- actor clicked mouse with mouseButton(button), mousePosition('(x, y, z)')" +
-                 "\n- actor pressed mouse with mouseButton(button), mousePosition('(x, y, z)')" +
-                 "\n- actor scrolled mouse with mouseButton(button), mousePosition('(x, y, z)'), scrollValue(wheelValue)" +
-                 "\n- actor moved mouse with mouseButton(button), mousePosition('(x, y, z)') and result startValue, endValue, value")]
+    [Description("Creates statements:\n- actor clicked mouse with mouseButton(String), mousePosition(Vector3)" +
+                 "\n- actor pressed mouse with mouseButton(String), mousePosition(Vector3)" +
+                 "\n- actor scrolled mouse with mouseButton(String), mousePosition(Vector3), scrollValue(Float)" +
+                 "\n- actor moved mouse with mouseButton(String), mousePosition(Vector3) and result startValue(Vector3), endValue(Vector3), value(Vector3)")]
     public sealed class MouseComposer : xApiComposer<MouseTrackingBehaviour>
     {
         public override Author GetAuthor()

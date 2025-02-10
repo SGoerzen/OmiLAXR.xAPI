@@ -6,7 +6,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Interactable Composer"),
-     Description("Creates statements:\n- actor interacted/grabbed/touched/released vrObject with vrObjectName(name)")]
+     Description("Creates statements:\n- actor interacted/grabbed/touched/released vrObject with vrObjectName(String)")]
     public class InteractableComposer : xApiComposer<InteractableTrackingBehaviour>
     {
         public override Author GetAuthor()

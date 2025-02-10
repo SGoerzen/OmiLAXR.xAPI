@@ -4,7 +4,6 @@ using System.Linq;
 using OmiLAXR.Composers;
 using OmiLAXR.xAPI.Extensions;
 using TinCan;
-using UnityEngine;
 using xAPI.Registry;
 
 namespace OmiLAXR.xAPI.Composers

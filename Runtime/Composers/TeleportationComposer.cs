@@ -7,7 +7,7 @@ using UnityEngine;
 namespace OmiLAXR.UnityXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Teleportation Composer"),
-     Description("Creates statements:\n- actor teleported teleportPoint/teleportArea with vrObjectName(name) and result position, startValue, endValue")]
+     Description("Creates statements:\n- actor teleported teleportPoint/teleportArea with vrObjectName(String) and result startValue(Vector3), endValue(Vector3), cameraYOffset(Float)")]
     public class TeleportationComposer : xApiComposer<TeleportationTrackingBehaviour>
     {
         public override Author GetAuthor()
