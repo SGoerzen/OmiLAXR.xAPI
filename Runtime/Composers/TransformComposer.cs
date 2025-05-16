@@ -7,7 +7,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Transform Composer (xAPI)")]
-    [Description("Creates statements:\n- actor moved/rotated/scaled vrObject with vrObjectName(name) and result position, rotation, scale, startValue, endValue")]
+    [Description("Creates statements:\n- actor moved/rotated/scaled vrObject with vrObjectName(String) and result position(Vector3), rotation(Vector3), scale(Vector3), startValue(Vector3), endValue(Vector3)")]
     public class TransformComposer : xApiComposer<TransformTrackingBehaviour>
     {
         public override Author GetAuthor()

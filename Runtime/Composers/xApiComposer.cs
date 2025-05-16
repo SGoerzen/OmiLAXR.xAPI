@@ -16,6 +16,12 @@ namespace OmiLAXR.xAPI.Composers
         protected override void Awake()
         {
             base.Awake();
+            if (!trackingBehaviour)
+            {
+                // disable if corresponding Tracking Behaviour is disabled
+                enabled = false;
+                return;
+            }
             actor = new xApiStatement.ActorRole(trackingBehaviour.GetActor(), GetAuthor(), trackingBehaviour.GetInstructor());
         }
 

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Keyboard Statement Composer (xAPI)")]
-    [Description("Creates statements:\n- actor pressed/released keyboard with keyboardButton(key)")]
+    [Description("Creates statements:\n- actor pressed/released keyboard with keyboardButton(String)")]
     public class KeyboardComposer : xApiComposer<KeyboardTrackingBehaviour>
     {
         public override Author GetAuthor()

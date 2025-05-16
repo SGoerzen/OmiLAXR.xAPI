@@ -7,12 +7,12 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / UI Statement Composer (xAPI)")]
-    [Description("Creates statements:\n- actor clicked uiElement with uiElementType('button'), vrObjectName(name), uiElementValue(text)" +
-                 "\n- actor changed uiElement with uiElementType('slider'), vrObjectName(name), uiElementValue(value), uiElementMinValue(minValue), uiElementMaxValue(maxValue)" +
-                 "\n- actor changed uiElement with uiElementType('dropdown'), vrObjectName(name), uiElementValue(value), uiElementMinValue(0), uiElementMaxValue(options.Length), uiElementOptions(options)" +
-                 "\n- actor changed uiElement with uiElementType('toggle'), vrObjectName(name), uiElementValue(checked), uiElementMinValue(false), uiElementMaxValue(true)" +
-                 "\n- actor changed uiElement with uiElementType('inputField'), vrObjectName(name), uiElementValue(value)" +
-                 "\n- actor changed uiElement with uiElementType('scrollbar'), vrObjectName(name), uiElementValue(value)")]
+    [Description("Creates statements:\n- actor clicked uiElement with uiElementType('button'), vrObjectName(String), uiElementValue(text)" +
+                 "\n- actor changed uiElement with uiElementType('slider'), vrObjectName(String), uiElementValue(String), uiElementMinValue(Float), uiElementMaxValue(Float)" +
+                 "\n- actor changed uiElement with uiElementType('dropdown'), vrObjectName(String), uiElementValue(String), uiElementMinValue(0), uiElementMaxValue(Int), uiElementOptions(String[])" +
+                 "\n- actor changed uiElement with uiElementType('toggle'), vrObjectName(String), uiElementValue(Boolean), uiElementMinValue(false), uiElementMaxValue(true)" +
+                 "\n- actor changed uiElement with uiElementType('inputField'), vrObjectName(String), uiElementValue(String)" +
+                 "\n- actor changed uiElement with uiElementType('scrollbar'), vrObjectName(String), uiElementValue(String)")]
     public sealed class UiComposer : xApiComposer<UiTrackingBehaviour>
     {
         public override Author GetAuthor()

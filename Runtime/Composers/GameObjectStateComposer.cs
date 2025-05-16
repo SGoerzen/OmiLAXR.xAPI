@@ -6,7 +6,7 @@ using UnityEngine;
 namespace OmiLAXR.xAPI.Composers
 {
     [AddComponentMenu("OmiLAXR / 4) Composers / Game Object State Composer (xAPI)")]
-    [Description("Creates statements:\n- actor deleted vrObject with vrObjectName(name)")]
+    [Description("Creates statements:\n- actor deleted vrObject with vrObjectName(String)")]
     public sealed class GameObjectStateComposer : xApiComposer<GameObjectStateTrackingBehaviour>
     {
         public override Author GetAuthor()
