@@ -1,3 +1,4 @@
+#if XAPI_REGISTRY_EXISTS
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -406,3 +407,4 @@ namespace OmiLAXR.xAPI.Composers
                 $"[xApiStatement verb: {_verb}, activity: {_activity}, ext: {_activityExtensions}, ctx: {_contextExtensions}, result: {_resultExtensions}, score: {_score}, success: {_success}, completion: {_completion}]";
     }
 }
+#endif

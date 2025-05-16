@@ -1,3 +1,4 @@
+#if XAPI_REGISTRY_EXISTS
 using OmiLAXR.Composers.HigherComposers;
 using xAPI.Registry;
 
@@ -18,3 +19,4 @@ namespace OmiLAXR.xAPI.Composers.HigherComposers
         }
     }
 }
+#endif

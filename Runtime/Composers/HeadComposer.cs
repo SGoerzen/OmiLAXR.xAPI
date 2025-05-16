@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿#if XAPI_REGISTRY_EXISTS
+using System.ComponentModel;
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
@@ -33,3 +34,4 @@ namespace OmiLAXR.xAPI.Composers
         }
     }
 }
+#endif
