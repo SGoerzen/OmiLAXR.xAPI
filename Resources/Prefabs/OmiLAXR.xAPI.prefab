@@ -69,6 +69,9 @@ PrefabInstance:
       addedObject: {fileID: 6783317496220711626}
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 5397424054694332999}
+    - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 5793300007011597523}
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
@@ -79,6 +82,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9153256989481736829}
+    - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6340841823552150126}
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3856123372627321691}
@@ -194,6 +200,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trackingBehaviour: {fileID: 0}
+--- !u!114 &5397424054694332999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949422813583137368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70c0f63c210547efa3dbeadcdfb69f75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackingBehaviour: {fileID: 0}
 --- !u!114 &5793300007011597523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,6 +262,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 778a8daaec1941578652e55f70291dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackingBehaviour: {fileID: 0}
+--- !u!114 &6340841823552150126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949422813583137368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5df344b192b4d768d43a37600af41ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   trackingBehaviour: {fileID: 0}
