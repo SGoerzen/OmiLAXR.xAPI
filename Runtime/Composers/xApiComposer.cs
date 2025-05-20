@@ -1,3 +1,4 @@
+#if XAPI_REGISTRY_EXISTS
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours;
 using xAPI.Registry;
@@ -28,3 +29,4 @@ namespace OmiLAXR.xAPI.Composers
         
     }
 }
+#endif

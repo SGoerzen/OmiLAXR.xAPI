@@ -1,3 +1,4 @@
+#if XAPI_REGISTRY_EXISTS
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -195,5 +196,5 @@ namespace OmiLAXR.xAPI
                 score, completion, success);
         }
     }
-
 }
+#endif

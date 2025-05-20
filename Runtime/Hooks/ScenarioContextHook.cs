@@ -1,3 +1,4 @@
+#if XAPI_REGISTRY_EXISTS
 using System;
 using System.ComponentModel;
 using OmiLAXR.Context;
@@ -51,3 +52,4 @@ namespace OmiLAXR.xAPI.Hooks
         }
     }
 }
+#endif

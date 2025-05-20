@@ -1,3 +1,4 @@
+#if XAPI_REGISTRY_EXISTS
 using System.ComponentModel;
 using OmiLAXR.Composers;
 using OmiLAXR.Extensions;
@@ -98,3 +99,4 @@ namespace OmiLAXR.xAPI.Composers
         }
     }
 }
+#endif

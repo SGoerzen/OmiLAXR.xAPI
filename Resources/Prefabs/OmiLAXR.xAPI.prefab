@@ -75,6 +75,9 @@ PrefabInstance:
       addedObject: {fileID: 6458040404535161818}
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 6569673134829413564}
+    - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 9153256989481736829}
     - targetCorrespondingSourceObject: {fileID: 2669770227701222551, guid: c7ff73a2577324ce9a47aec567df72f2, type: 3}
       insertIndex: -1
@@ -107,13 +110,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 949631878024754708}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95754399aa7e43b59131d9df6cc9aa8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   filename: credentials.json
-  targetEndpoint: {fileID: 0}
+  targetEndpoint: {fileID: 9135528826683086705}
 --- !u!114 &9135528826683086705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,6 +217,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e011fb6cb55749af89afaa516e0dcf5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackingBehaviour: {fileID: 0}
+--- !u!114 &6569673134829413564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949422813583137368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dba378a8ce13468bafef88d0e42d2b6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   trackingBehaviour: {fileID: 0}
