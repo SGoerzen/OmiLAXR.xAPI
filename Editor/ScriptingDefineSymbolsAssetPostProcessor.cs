@@ -10,7 +10,7 @@ namespace OmiLAXR.xAPI.Editor
 {
     internal class ScriptingDefineSymbolsAssetPostProcessor : AssetPostprocessor
     {
-        const string XAPI_REGISTRY_EXISTS = "XAPI_REGISTRY_EXISTS";
+        public const string XAPI_REGISTRY_EXISTS = "XAPI_REGISTRY_EXISTS";
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets,
             string[] movedFromAssetPaths)
         {
