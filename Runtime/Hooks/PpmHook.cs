@@ -1,3 +1,4 @@
+#if XAPI_REGISTRY_EXISTS
 using System.ComponentModel;
 using OmiLAXR.Actors.HeartRate;
 using OmiLAXR.xAPI.Composers;
@@ -22,3 +23,4 @@ namespace OmiLAXR.xAPI.Hooks
         }
     }
 }
+#endif

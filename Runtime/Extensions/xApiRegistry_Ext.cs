@@ -1,3 +1,4 @@
+#if XAPI_REGISTRY_EXISTS
 using System.Collections.Generic;
 using System.Linq;
 using xAPI.Registry;
@@ -18,3 +19,4 @@ namespace OmiLAXR.xAPI.Extensions
             => new xAPI_Actor(team.teamName, team.teamEmail);
     }
 }
+#endif
