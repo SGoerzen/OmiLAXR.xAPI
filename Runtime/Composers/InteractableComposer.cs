@@ -48,7 +48,6 @@ namespace OmiLAXR.xAPI.Composers
                 SendStatement(stmt);
             });
         }
-        
     }
 }
 #endif
