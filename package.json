@@ -46,5 +46,8 @@
       "description": "Examples of Tracking Behaviours and Composers using SetInterval and SetTimeout Schedules.",
       "path": "Samples~/Scheduler"
     }
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
