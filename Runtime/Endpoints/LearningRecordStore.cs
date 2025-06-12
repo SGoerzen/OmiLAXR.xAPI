@@ -1,6 +1,7 @@
 #if XAPI_REGISTRY_EXISTS
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using OmiLAXR.Composers;
 using OmiLAXR.Endpoints;
 using OmiLAXR.xAPI.Composers;
@@ -14,17 +15,10 @@ namespace OmiLAXR.xAPI.Endpoints
     [Description("Sends all received statements a Learning Record Store asynchronously.")]
     public class LearningRecordStore : BasicAuthEndpoint
     {
-        [Tooltip("xAPI Base URL")]
-        public string statementIdUri = "https://xapi.elearn.rwth-aachen.de/definitions/";
-        
         private RemoteLRS _remoteLrs;
-        
-        protected override void OnEnable()
-        {
-            _remoteLrs = new RemoteLRS(credentials.endpoint, credentials.username, credentials.password);
-            base.OnEnable();
-        }
 
+        protected override int MaxBatchSize => 20;
+        
         /// <summary>
         /// Transfer multiple statements to LRS.
         /// </summary>
@@ -45,12 +39,45 @@ namespace OmiLAXR.xAPI.Endpoints
             return resultTransferStatements;
         }
 
-        protected override TransferCode HandleSending(IStatement statement)
+        public override void StartSending(bool resetQueue = false)
         {
-            var stmt = statement as xApiStatement;
+            var credentials = Credentials;
+            _remoteLrs = new RemoteLRS(credentials.endpoint, credentials.username, credentials.password);
+            base.StartSending(resetQueue);
+        }
 
-            var tinCanStatement = stmt.ToTinCanStatement(statementIdUri);
+        protected override TransferCode HandleSending(List<IStatement> batch)
+        {
+            if (batch.Count == 0)
+                return TransferCode.NoStatements;
+            
+            var stmts = batch.Select(s => (s as xApiStatement).ToTinCanStatement()).ToList();
 
+            var resp = _remoteLrs.SaveStatements(stmts);
+
+            if (!resp.success)
+            {
+                DebugLog.xAPI.Error($"Error Message: {resp.errMsg}, Http Error: {resp.httpException}");
+                foreach (var statement in batch)
+                {
+                    TriggerFailedStatement(statement);
+                    QueuedStatements.Enqueue(statement);
+                }
+                TriggerFailedBatch(batch);
+                return TransferCode.Error;
+            }
+            
+            foreach (var statement in batch)
+                TriggerSentStatement(statement);
+
+            return TransferCode.Success;
+        }
+
+        protected override TransferCode HandleSending(IStatement stmt)
+        {
+            var statement = stmt as xApiStatement;
+            var tinCanStatement = statement.ToTinCanStatement();
+            
             // Transfer single statement to LRS
             var resp = _remoteLrs.SaveStatement(tinCanStatement);
             
@@ -59,6 +86,7 @@ namespace OmiLAXR.xAPI.Endpoints
             
             // Print error message to know more about on debug
             DebugLog.xAPI.Error($"Error Message: {resp.errMsg}, Http Error: {resp.httpException}");
+            
             return TransferCode.Error;
         }
     }

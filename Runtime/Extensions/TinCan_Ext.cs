@@ -1,4 +1,3 @@
-#if XAPI_REGISTRY_EXISTS
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,27 +15,28 @@ namespace OmiLAXR.xAPI.Extensions
             // Skip if there are no extensions
             if (jObject == null)
                 return;
-#if UNITY_2019 || UNITY_2020
-            foreach (var kvp in extensions)
-            {
-                var id = kvp.Key.CreateValidId(uri);
-                jObject.Add(id, kvp.Value == null ? "null" : kvp.Value.ToString());
-            }
-#else
+#if UNITY_2021_1_OR_NEWER 
             foreach (var (extension, value) in extensions)
             {
-                var id = extension.CreateValidId(uri);
+                var id = extension.CreateId(uri);
                 jObject.Add(id, value == null ? "null" : value.ToString());
+            }
+#else
+            foreach (var kvp in extensions)
+            {
+                var id = kvp.Key.CreateId(uri);
+                jObject.Add(id, kvp.Value == null ? "null" : kvp.Value.ToString());
             }
 #endif
         }
 
-        public static tc.Statement ToTinCanStatement(this xApiStatement s, string statementUri)
+        public static tc.Statement ToTinCanStatement(this xApiStatement s)
         {
             var customTimestamp = s.GetTimestamp();
             var actor = s.GetActor();
             var stmt = new tc.Statement()
             {
+                id = s.GetId(),
                 // Statement Meta
                 timestamp = customTimestamp ?? s.CreatedAt,
                 version = tc.TCAPIVersion.latest(),
@@ -44,31 +44,36 @@ namespace OmiLAXR.xAPI.Extensions
                 // Actor
                 actor = s.IsInGroup ? actor.ToTinCanAgentGroup(s.GetGroupMembers()) : actor.ToTinCanAgent(),
                 // Verb
-                verb = s.GetVerb().ToTinCanVerb(statementUri),
+                verb = s.GetVerb().ToTinCanVerb(s.GetUri()),
                 // Activity + Activity Extension
-                target = s.GetActivity().ToTinCanActivity(statementUri, s.GetActivityExtensions()),
+                target = s.GetActivity().ToTinCanActivity(s.GetUri(), s.GetActivityExtensions(), s.GetInteractionType(), s.GetCorrectResponses()),
                 // Context
-                context = s.GetContextExtensions().ToTinCanContext(statementUri, s.GetLanguage(), s.GetPlatform(), s.GetInstructor(), s.GetTeam(), s.GetTeamMembers(), s.GetRegistration()),
+                context = s.GetContextExtensions().ToTinCanContext(s.GetUri(), s.GetLanguage(), s.GetPlatform(), s.GetInstructor(), s.GetTeam(), s.GetTeamMembers(), s.GetRegistration()),
                 // Result
-                result = s.GetResultExtensions().ToTinCanResult(statementUri, s.GetScore(), s.GetCompletion(), s.GetSuccess(), s.GetResponse()),
+                result = s.GetResultExtensions().ToTinCanResult(s.GetUri(), s.GetScore(), s.GetCompletion(), s.GetSuccess(), s.GetResponse()),
             };
             return stmt;
         }
         
-        public static tc.Context ToTinCanContext(this xAPI_Extensions_Context extensions, string uri, string language, string platform, xAPI_Actor? instructor = null, xAPI_Actor? team = null, xAPI_Actor[] teamMembers = null, Guid? registration = null)
+        public static tc.Context ToTinCanContext(this xAPI_Extensions_Context extensions, string uri, string language, string platform, xAPI_Actor? instructor = null, xAPI_Actor? team = null, xAPI_Actor[] teamMembers = null, Guid? registration = null, Guid? refId = null)
         {
-            return new tc.Context()
+            var ctx = new tc.Context()
             {
                 instructor = instructor?.ToTinCanAgent(),
                 extensions = extensions?.ToTinCanExtensions(uri),
                 registration = registration,
                 team = team?.ToTinCanAgentTeam(teamMembers),
                 language = language,
-                platform = platform
+                platform = platform,
             };
+            
+            if (refId != null)
+                ctx.statement = new tc.StatementRef(refId.Value);
+
+            return ctx;
         }
 
-        public static tc.Result ToTinCanResult(this xAPI_Extensions_Result extensions, string uri, tc.Score score = null, bool? completion = null, bool? success = null, string response = null)
+        public static tc.Result ToTinCanResult(this xAPI_Extensions_Result extensions, string uri, tc.Score score = null, bool? completion = null, bool? success = null, string response = null, TimeSpan? duration = null)
         {
             return new tc.Result
             {
@@ -76,17 +81,28 @@ namespace OmiLAXR.xAPI.Extensions
                 completion = completion,
                 success = success,
                 extensions = extensions?.ToTinCanExtensions(uri),
-                response = response
+                response = response,
+                duration = duration
             };
         }
+
+        private static Uri CreateValidUri(this xAPI_Definition definition, string uri)
+        {
+            var isRelative = string.IsNullOrEmpty(uri) || uri == "/";
+            var defPath = definition.CreateId(uri);
+
+            if (isRelative && defPath[0] == '/')
+                defPath = defPath.Substring(1);
+            
+            return new Uri(defPath, isRelative ? UriKind.Relative : UriKind.RelativeOrAbsolute);
+        } 
         
-        
-        private static tc.Verb ToTinCanVerb(this xAPI_Verb verb, string uri)
+        public static tc.Verb ToTinCanVerb(this xAPI_Verb verb, string uri)
         {
             var v = new tc.Verb
             {
                
-                id = new Uri(verb.CreateValidId(uri)),
+                id = CreateValidUri(verb, uri),
                 display = new tc.LanguageMap()
             };
 
@@ -96,15 +112,24 @@ namespace OmiLAXR.xAPI.Extensions
             return v;
         }
 
-        private static tc.Activity ToTinCanActivity(this xAPI_Activity activity, string uri, xAPI_Extensions extensions = null)
+        #if XAPI_REGISTRY_EXISTS
+        private static string CreateId(this xAPI_Definition definition, string uri)
+            => string.IsNullOrEmpty(uri) ? definition.GetPath() : definition.CreateValidId(uri);
+        #else
+        private static string CreateId(this xAPI_Definition definition, string uri) => "";
+        #endif
+        
+        public static tc.Activity ToTinCanActivity(this xAPI_Activity activity, string uri, xAPI_Extensions extensions = null, tc.InteractionType interactionType = null, List<string> correctResponsesPattern = null)
         {            
             var a = new tc.Activity
             {
-                id = activity.CreateValidId(uri), // todo: combine with type
+                id = activity.CreateId(uri),
                 definition = activity.ToTinCanActivityDefinition(),
             };
-
+            
             a.definition.extensions = extensions?.ToTinCanExtensions(uri);
+            a.definition.interactionType = interactionType;
+            a.definition.correctResponsesPattern = correctResponsesPattern;
 
             return a;
         }
@@ -138,8 +163,6 @@ namespace OmiLAXR.xAPI.Extensions
             };
         }
         
-        public static tc.Extensions ToTinCanExtensions(this xAPI_Extensions extensions, System.Uri uri)
-            => ToTinCanExtensions(extensions, uri.ToString());
         public static tc.Extensions ToTinCanExtensions(this xAPI_Extensions extensions, string uri)
         {
             var jObject = new JObject();
@@ -158,4 +181,3 @@ namespace OmiLAXR.xAPI.Extensions
         }
     }
 }
-#endif

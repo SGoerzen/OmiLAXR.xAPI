@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
-    [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Statement Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Composer (xAPI)")]
     [Description("Creates statements:\n- actor clicked mouse with mouseButton(String), mousePosition(Vector3)" +
                  "\n- actor pressed mouse with mouseButton(String), mousePosition(Vector3)" +
                  "\n- actor scrolled mouse with mouseButton(String), mousePosition(Vector3), scrollValue(Float)" +
@@ -17,25 +17,25 @@ namespace OmiLAXR.xAPI.Composers
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(MouseTrackingBehaviour tb)
         {
-            tb.OnClicked.AddHandler((_, args) =>
+            tb.OnClicked.AddHandler((owner, args) =>
             {
                 var statement = actor.Does(xapi.generic.verbs.clicked)
                     .Activity(xapi.generic.activities.mouse, 
                         xapi.generic.extensions.activity
                             .mouseButton(args.mouseButton)
                             .mousePosition(args.mousePosition));
-                SendStatement(statement);
+                SendStatement(owner, statement);
             });
-            tb.OnPressedDown.AddHandler((_, args) =>
+            tb.OnPressedDown.AddHandler((owner, args) =>
             {
                 var statement = actor.Does(xapi.generic.verbs.pressed)
                     .Activity(xapi.generic.activities.mouse, 
                         xapi.generic.extensions.activity
                             .mouseButton(args.mouseButton)
                             .mousePosition(args.mousePosition));
-                SendStatement(statement);
+                SendStatement(owner, statement);
             });
-            tb.OnScrolledWheel.AddHandler((_, args, value) =>
+            tb.OnScrolledWheel.AddHandler((owner, args, value) =>
             {
                 var statement = actor.Does(xapi.generic.verbs.scrolled)
                     .Activity(xapi.generic.activities.mouse, 
@@ -43,9 +43,9 @@ namespace OmiLAXR.xAPI.Composers
                             .mouseButton(args.mouseButton)
                             .mousePosition(args.mousePosition)
                             .scrollValue(value));
-                SendStatement(statement);
+                SendStatement(owner, statement);
             });
-            tb.OnMousePositionChanged.AddHandler((_, pos, oldPos) =>
+            tb.OnMousePositionChanged.AddHandler((owner, pos, oldPos) =>
             {
                 var change = pos - oldPos;
                 var statement = actor.Does(xapi.generic.verbs.moved)
@@ -56,7 +56,7 @@ namespace OmiLAXR.xAPI.Composers
                         .startValue(oldPos)
                         .endValue(pos)
                         .value(change)); // todo add delta value, add from to value
-                SendStatement(statement);
+                SendStatement(owner, statement);
             });
         }
     }

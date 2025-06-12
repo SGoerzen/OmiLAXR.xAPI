@@ -24,14 +24,15 @@ namespace OmiLAXR.xAPI.Hooks
 
             if (PlatformInformation.Instance)
             {
+                var composerName = statement.GetComposer().GetType().Name;
                 // Add platform information
-                var platform = PlatformInformation.Instance.GetPlatformString();
+                var platform = PlatformInformation.Instance.GetPlatformString("xAPI", "2.0.19", composerName);
                 statement.WithPlatform(platform);
             }
 
             if (FpsMonitor.Instance && FpsMonitor.Instance.enabled)
             {
-                statement.WithContext(xapi.systemControl.extensions.context.fps(FpsMonitor.Instance.fps));
+                statement.WithContext(xapi.systemControl.extensions.context.fps(FpsMonitor.Instance.CurrentFPS));
             }
             
             if (Registration.Instance && Registration.Instance.enabled)

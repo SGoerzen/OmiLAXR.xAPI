@@ -16,7 +16,7 @@ namespace OmiLAXR.xAPI
 
         protected override void Compose(TransformTrackingBehaviour tb)
         {
-            tb.OnChangedPosition.AddHandler((_, tw, change) =>
+            tb.OnChangedPosition.AddHandler((owner, tw, change) =>
             {
                 var t = tw.transform;
                 var stmt = actor.Does(xapi.virtualReality.verbs.moved)
@@ -30,9 +30,9 @@ namespace OmiLAXR.xAPI
                     .WithResult(xapi.generic.extensions.result
                         .startValue(change.OldValue)
                         .endValue(change.NewValue));
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
-            tb.OnChangedRotation.AddHandler((_, tw, change) =>
+            tb.OnChangedRotation.AddHandler((owner, tw, change) =>
             {
                 var t = tw.transform;
                 var stmt = actor.Does(xapi.virtualReality.verbs.rotated)
@@ -46,9 +46,9 @@ namespace OmiLAXR.xAPI
                     .WithResult(xapi.generic.extensions.result
                         .startValue(change.OldValue)
                         .endValue(change.NewValue));
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
-            tb.OnChangedScale.AddHandler((_, tw, change) =>
+            tb.OnChangedScale.AddHandler((owner, tw, change) =>
             {
                 var t = tw.transform;
                 var stmt = actor.Does(xapi.virtualReality.verbs.scaled)
@@ -62,7 +62,7 @@ namespace OmiLAXR.xAPI
                     .WithResult(xapi.generic.extensions.result
                         .startValue(change.OldValue)
                         .endValue(change.NewValue));
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
         }
     }

@@ -1,4 +1,5 @@
-#if !XAPI_REGISTRY_EXISTS
+#if UNITY_EDITOR
+
 using System.IO;
 using OmiLAXR.Editor;
 using UnityEditor;
@@ -6,31 +7,35 @@ using UnityEngine;
 
 namespace OmiLAXR.xAPI.Editor
 {
-    public class xApiRegistryFolderChecker
+    internal class xApiRegistryFolderChecker
     {
-        [InitializeOnLoad]
-        internal static class XapiRegistryFolderChecker
-        {
-            private const string FolderPath = "Assets/xAPI.Registry";
-            private static string XAPI_REGISTRY_EXISTS => ScriptingDefineSymbolsAssetPostProcessor.XAPI_REGISTRY_EXISTS;
+        private const string FolderPath = "Assets/xAPI.Registry";
+        private static string XAPI_REGISTRY_EXISTS => ScriptingDefineSymbolsAssetPostProcessor.XAPI_REGISTRY_EXISTS;
 
-            static XapiRegistryFolderChecker()
+        [MenuItem("OmiLAXR / Validation / Check if xAPI Registry exists")]
+        [InitializeOnLoadMethod]
+        private static void CheckOnEditorStartup()
+        {
+            if (Directory.Exists(FolderPath))
             {
-                
-                
-                // Run only once on editor launch
-                if (Directory.Exists(FolderPath))
+                if (!DefineUtility.IsDefined(XAPI_REGISTRY_EXISTS))
                 {
-                    DefineUtility.AddXapiRegistryExistsDefine(XAPI_REGISTRY_EXISTS);
-                    Debug.Log($"\"{XAPI_REGISTRY_EXISTS}\" defined because folder exists at: {FolderPath}");
+                    DefineUtility.Set(XAPI_REGISTRY_EXISTS);
+                    Debug.Log($"\"{XAPI_REGISTRY_EXISTS}\" defined because folder exists at: '{FolderPath}'.");
+                }
+            }
+            else
+            {
+                if (DefineUtility.IsDefined(XAPI_REGISTRY_EXISTS))
+                {
+                    DefineUtility.Unset(XAPI_REGISTRY_EXISTS);
+                    Debug.LogWarning($"Unset \"{XAPI_REGISTRY_EXISTS}\" because folder no longer exists.");
                 }
                 else
                 {
-                    DefineUtility.RemoveXapiRegistryExistsDefine(XAPI_REGISTRY_EXISTS);
-                    Debug.Log($"\"{XAPI_REGISTRY_EXISTS}\" removed because folder does not exist at: {FolderPath}");
+                    Debug.LogWarning(
+                        $"xAPI.Registry not found at '{FolderPath}'. If needed, please create it via xAPI4Unity or import from package 'Samples'. Think of to place it with the name 'xAPI.Registry' to 'Assets' root.");
                 }
-                
-                
             }
         }
     }

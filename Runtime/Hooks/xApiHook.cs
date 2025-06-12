@@ -1,4 +1,3 @@
-#if XAPI_REGISTRY_EXISTS
 using OmiLAXR.Composers;
 using OmiLAXR.Hooks;
 using OmiLAXR.xAPI.Composers;
@@ -18,4 +17,3 @@ namespace OmiLAXR.xAPI.Hooks
         protected abstract xApiStatement AfterCompose(xApiStatement statement);
     }
 }
-#endif

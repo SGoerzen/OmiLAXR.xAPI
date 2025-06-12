@@ -1,4 +1,5 @@
 #if XAPI_REGISTRY_EXISTS
+using System.Linq;
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours;
 using xAPI.Registry;
@@ -11,19 +12,21 @@ namespace OmiLAXR.xAPI.Composers
         /// <summary>
         /// Who is responsible for the correctness of the statement.
         /// </summary>
-        protected xApiStatement.ActorRole actor;
-        protected readonly xAPI_Contexts xapi = new xAPI_Contexts();
-        
-        protected override void Awake()
+        protected xApiStatement.Builder actor;
+        protected static xAPI_Contexts xapi => xApiRegistry.definitions;
+
+        protected string Uri = "";
+        protected virtual string GetUri() => Uri;
+
+        protected override void OnEnable()
         {
-            base.Awake();
-            if (!trackingBehaviour)
-            {
-                // disable if corresponding Tracking Behaviour is disabled
-                enabled = false;
-                return;
-            }
-            actor = new xApiStatement.ActorRole(trackingBehaviour.GetActor(), GetAuthor(), trackingBehaviour.GetInstructor());
+            var globalUri = GetComponentInParent<xApiRegistry>();
+            if (globalUri && globalUri.enabled)
+                Uri = globalUri.uri;
+            
+            actor = new xApiStatement.Builder(GetUri(), GetAuthor());
+            
+            base.OnEnable();
         }
 
         
