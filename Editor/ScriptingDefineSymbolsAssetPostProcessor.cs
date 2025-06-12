@@ -1,5 +1,4 @@
 ﻿#if UNITY_EDITOR
-using System;
 using System.IO;
 using System.Linq;
 using OmiLAXR.Editor;
@@ -10,27 +9,56 @@ namespace OmiLAXR.xAPI.Editor
 {
     internal class ScriptingDefineSymbolsAssetPostProcessor : AssetPostprocessor
     {
+        private static bool _isProcessing = false;
+        private static bool _scheduled = false;
+
         public const string XAPI_REGISTRY_EXISTS = "XAPI_REGISTRY_EXISTS";
+
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets,
             string[] movedFromAssetPaths)
         {
-            // Check if the folder was created or deleted
-            foreach (var path in importedAssets)
+            if (_isProcessing || _scheduled)
+                return;
+
+            var defineExists = DefineUtility.IsDefined(XAPI_REGISTRY_EXISTS);
+
+            var shouldAdd = !defineExists && importedAssets.Any(path =>
+                Path.GetFileName(path) == "xAPI.Registry" &&
+                AssetDatabase.IsValidFolder(path) &&
+                !path.EndsWith(".meta"));
+
+            var shouldRemove = defineExists && deletedAssets.Any(path =>
+                Path.GetFileName(path) == "xAPI.Registry" &&
+                !path.EndsWith(".meta"));
+            
+            if (!shouldAdd && !shouldRemove)
+                return;
+
+            _scheduled = true;
+
+            EditorApplication.delayCall += () =>
             {
-                if (path.EndsWith("xAPI.Registry") && AssetDatabase.IsValidFolder(path))
+                _isProcessing = true;
+
+                try
                 {
-                    DefineUtility.AddXapiRegistryExistsDefine(XAPI_REGISTRY_EXISTS);
-                    Debug.Log("xAPI.Registry folder created! \"XAPI_REGISTRY_EXISTS\" was set.");
+                    if (shouldAdd)
+                    {
+                        DefineUtility.Set(XAPI_REGISTRY_EXISTS);
+                        Debug.Log("xAPI.Registry does exist! \"XAPI_REGISTRY_EXISTS\" was set. You can start working with xAPI.Registry.");
+                    }
+                    else if (shouldRemove)
+                    {
+                        DefineUtility.Unset(XAPI_REGISTRY_EXISTS);
+                        Debug.LogError("xAPI.Registry folder deleted! \"XAPI_REGISTRY_EXISTS\" was removed. If you like to work with xAPI.Registry, please use xAPI4Unity to create it.");
+                    }
                 }
-            }
-            foreach (var path in deletedAssets)
-            {
-                if (path.EndsWith("xAPI.Registry"))
+                finally
                 {
-                    DefineUtility.RemoveXapiRegistryExistsDefine(XAPI_REGISTRY_EXISTS);
-                    Debug.Log("xAPI.Registry folder deleted! \"XAPI_REGISTRY_EXISTS\" was removed.");
+                    _isProcessing = false;
+                    _scheduled = false;
                 }
-            }
+            };
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
-    [AddComponentMenu("OmiLAXR / 4) Composers / Head Statement Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / Head Composer (xAPI)")]
     [Description("Creates statements:\n- actor nodded/shaked head with timeSpan(TimeSpan), numberOfGestures(Int)")]
     public class HeadComposer : xApiComposer<HeadTrackingBehaviour>
     {
@@ -15,21 +15,21 @@ namespace OmiLAXR.xAPI.Composers
 
         protected override void Compose(HeadTrackingBehaviour tb)
         {
-            tb.OnNodded.AddHandler((sender, args) =>
+            tb.OnNodded.AddHandler((owner, args) =>
             {
                 var stmt = actor.Does(xapi.gestures.verbs.nodded)
                     .Activity(xapi.gestures.activities.head)
                     .WithResult(xapi.generic.extensions.result.timeSpan(args.TimeSpan))
                     .WithResult(xapi.gestures.extensions.result.numberOfGestures(args.NumberOfGesture));
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
-            tb.OnShook.AddHandler((sender, args) =>
+            tb.OnShook.AddHandler((owner, args) =>
             {
                 var stmt = actor.Does(xapi.gestures.verbs.shaked)
                     .Activity(xapi.gestures.activities.head)
                     .WithResult(xapi.generic.extensions.result.timeSpan(args.TimeSpan))
                     .WithResult(xapi.gestures.extensions.result.numberOfGestures(args.NumberOfGesture));
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
         }
     }

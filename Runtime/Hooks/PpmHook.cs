@@ -14,7 +14,7 @@ namespace OmiLAXR.xAPI.Hooks
         {
             var heartRateProvider = GetProvider<HeartRateProvider>(statement);
             
-            if (heartRateProvider && heartRateProvider.enabled)
+            if (heartRateProvider)
             {
                 statement.WithResult(xapi.ppm.extensions.result.heartRate(heartRateProvider.GetHeartRate()));
             }

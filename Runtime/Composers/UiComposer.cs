@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers
 {
-    [AddComponentMenu("OmiLAXR / 4) Composers / UI Statement Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / UI Composer (xAPI)")]
     [Description("Creates statements:\n- actor clicked uiElement with uiElementType('button'), vrObjectName(String), uiElementValue(text)" +
                  "\n- actor changed uiElement with uiElementType('slider'), vrObjectName(String), uiElementValue(String), uiElementMinValue(Float), uiElementMaxValue(Float)" +
                  "\n- actor changed uiElement with uiElementType('dropdown'), vrObjectName(String), uiElementValue(String), uiElementMinValue(0), uiElementMaxValue(Int), uiElementOptions(String[])" +
@@ -20,7 +20,7 @@ namespace OmiLAXR.xAPI.Composers
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
         protected override void Compose(UiTrackingBehaviour tb)
         {
-            tb.OnClickedButton.AddHandler((_, button) =>
+            tb.OnClickedButton.AddHandler((owner, button) =>
             {
                 var buttonName = button.gameObject.GetTrackingName();
                 var text = button.GetTextOrDefault();
@@ -31,9 +31,9 @@ namespace OmiLAXR.xAPI.Composers
                         .vrObjectName(buttonName)
                         .uiElementValue(text))
                     .Activity(xapi.virtualReality.activities.uiElement);
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
-            tb.OnChangedSlider.AddHandler((_, slider, newValue) =>
+            tb.OnChangedSlider.AddHandler((owner, slider, newValue) =>
             {
                 var maxValue = slider.maxValue;
                 var minValue = slider.minValue;
@@ -46,9 +46,9 @@ namespace OmiLAXR.xAPI.Composers
                         .uiElementMinValue(minValue)
                         .uiElementMaxValue(maxValue))
                     .Activity(xapi.virtualReality.activities.uiElement);
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
-            tb.OnChangedDropdown.AddHandler((_, dropdown, newValue, options) =>
+            tb.OnChangedDropdown.AddHandler((owner, dropdown, newValue, options) =>
             {
                 var value = options[newValue];
                 var stmt = actor.Does(xapi.generic.verbs.changed)
@@ -60,9 +60,9 @@ namespace OmiLAXR.xAPI.Composers
                         .uiElementMaxValue(options.Length)
                         .uiElementOptions(options))
                     .Activity(xapi.virtualReality.activities.uiElement);
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
-            tb.OnChangedToggle.AddHandler((_, toggle, isChecked) =>
+            tb.OnChangedToggle.AddHandler((owner, toggle, isChecked) =>
             {
                 var stmt = actor.Does(xapi.generic.verbs.changed)
                     .WithExtension(xapi.virtualReality.extensions.activity
@@ -72,9 +72,9 @@ namespace OmiLAXR.xAPI.Composers
                         .uiElementMinValue(false)
                         .uiElementMaxValue(true))
                     .Activity(xapi.virtualReality.activities.uiElement);
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
-            tb.OnChangedInputField.AddHandler((_, inputFieldSelectable, value) =>
+            tb.OnChangedInputField.AddHandler((owner, inputFieldSelectable, value) =>
             {
                 // inputFieldSelectable may be InputField or TMP_InputField
                 var stmt = actor.Does(xapi.generic.verbs.changed)
@@ -83,9 +83,9 @@ namespace OmiLAXR.xAPI.Composers
                         .vrObjectName(inputFieldSelectable.GetTrackingName())
                         .uiElementValue(value))
                     .Activity(xapi.virtualReality.activities.uiElement);
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
-            tb.OnChangedScrollbar.AddHandler((_, scrollbar, value) =>
+            tb.OnChangedScrollbar.AddHandler((owner, scrollbar, value) =>
             {
                 var stmt = actor.Does(xapi.generic.verbs.changed)
                     .WithExtension(xapi.virtualReality.extensions.activity
@@ -94,7 +94,7 @@ namespace OmiLAXR.xAPI.Composers
                         .uiElementValue(value)
                     )
                     .Activity(xapi.virtualReality.activities.uiElement);
-                SendStatement(stmt);
+                SendStatement(owner, stmt);
             });
         }
     }

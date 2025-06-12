@@ -1,16 +1,16 @@
 {
   "name": "com.rwth.unity.omilaxr.xapi",
-  "version": "2.0.18",
+  "version": "2.1.0",
   "displayName": "OmiLAXR.xAPI",
   "description": "This is a package for OmiLAXR for enabling xAPI.",
   "unity": "2020.3",
   "unityRelease": "15f1",
   "documentationUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxr.xapi/-/wikis",
-  "changelogUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxrv2.xapi/-/blob/main/CHANGELOG",
+  "changelogUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxrv2.xapi/-/blob/main/CHANGELOG.md",
   "licensesUrl": "https://gitlab.com/learntech-rwth/omilaxr-ecosystem/v2/omilaxrv2.xapi/-/blob/main/LICENSE",
   "homepage": "https://omilaxr.dev/",
   "dependencies": {
-    "com.rwth.unity.omilaxr": "2.0.18"
+    "com.rwth.unity.omilaxr": "2.1.0"
   },
   "keywords": [
     "OmiLAXR",
@@ -24,5 +24,27 @@
     "name": "Sergej Görzen",
     "email": "goerzen@cs.rwth-aachen.de",
     "url": "https://elearn.rwth-aachen.de/goerzen"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "xapi",
+      "description": "xAPI Registry definitions as JSON files that are used for this version. Move it to Assets/xapi.",
+      "path": "Samples~/xapi"
+    },
+    {
+      "displayName": "xAPI.Registry",
+      "description": "Contains the xAPI.Registry namespace and collection that is used for this version. Move it to Assets/xAPI.Registry.",
+      "path": "Samples~/xAPI.Registry"
+    },
+    {
+      "displayName": "Endpoints Examples",
+      "description": "Example endpoints working with xAPI data.",
+      "path": "Samples~/xApiEndpoints"
+    },
+    {
+      "displayName": "Scheduler Examples",
+      "description": "Examples of Tracking Behaviours and Composers using SetInterval and SetTimeout Schedules.",
+      "path": "Samples~/Scheduler"
+    }
+  ]
 }
