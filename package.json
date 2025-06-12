@@ -9,6 +9,11 @@
   "changelogUrl": "https://github.com/SGoerzen/OmiLAXR.xAPI/blob/main/CHANGELOG.md",
   "licensesUrl": "https://github.com/SGoerzen/OmiLAXR.xAPI/blob/main/LICENSE",
   "homepage": "https://omilaxr.dev/",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SGoerzen/OmiLAXR.xAPI"
+  },
   "dependencies": {
     "com.rwth.unity.omilaxr": "2.1.0"
   },
