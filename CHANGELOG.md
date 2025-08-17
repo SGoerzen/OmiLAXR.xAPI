@@ -1,4 +1,32 @@
 # Changelog
+
+## [2.1.1] - 2025-08-17
+
+### Added
+- Handler in `InputSystemComposer` to generate xAPI-Statements for `OnReleasedAnyButton`.
+- Pipeline delegates for richer events.
+- License information added to each file.
+- XML `<summary>` documentation added to each file, field, and function, plus additional code comments.
+- All composers assigned to a composer group.
+
+### Changed
+- Platform information format updated to  
+  `"OmiLAXR.{module}:{composerGroup}.{composerName}:v{version}:{Application.platform}"`.
+
+### Fixed
+- `LearningRecordStore` now works on WebGL.
+- Platform version corrected.
+- Improved reliability of the `actor ended game` statement.
+
+### Deprecated
+- None.
+
+### Removed
+- None.
+
+### Security
+- None.
+
 ## [2.1.0] - 2025-06-12
 
 ### Added
