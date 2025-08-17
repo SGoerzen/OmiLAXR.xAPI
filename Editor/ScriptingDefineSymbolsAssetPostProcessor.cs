@@ -1,4 +1,9 @@
-﻿#if UNITY_EDITOR
+﻿/*
+* SPDX-License-Identifier: AGPL-3.0-or-later
+* Copyright (C) 2025 Sergej Görzen <sergej.goerzen@gmail.com>
+* This file is part of OmiLAXR.xAPI.
+*/
+#if UNITY_EDITOR
 using System.IO;
 using System.Linq;
 using OmiLAXR.Editor;
@@ -7,35 +12,69 @@ using UnityEngine;
 
 namespace OmiLAXR.xAPI.Editor
 {
+    /// <summary>
+    /// Unity Asset Postprocessor that automatically manages xAPI Registry scripting define symbols.
+    /// Monitors file system changes to detect when the xAPI Registry folder is added or removed,
+    /// automatically updating scripting defines to enable/disable xAPI-dependent code compilation.
+    /// </summary>
     internal class ScriptingDefineSymbolsAssetPostProcessor : AssetPostprocessor
     {
+        /// <summary>
+        /// Flag to prevent recursive processing during define symbol updates.
+        /// Ensures processing logic doesn't trigger additional asset processing cycles.
+        /// </summary>
         private static bool _isProcessing = false;
+        
+        /// <summary>
+        /// Flag to prevent multiple scheduled operations from being queued simultaneously.
+        /// Ensures only one define symbol update operation is pending at any time.
+        /// </summary>
         private static bool _scheduled = false;
 
+        /// <summary>
+        /// The scripting define symbol name used throughout the system for xAPI Registry detection.
+        /// When this symbol is defined, xAPI-dependent code will be compiled and available.
+        /// </summary>
         public const string XAPI_REGISTRY_EXISTS = "XAPI_REGISTRY_EXISTS";
 
+        /// <summary>
+        /// Unity callback triggered after asset import/delete operations complete.
+        /// Analyzes asset changes to detect xAPI Registry folder additions or removals,
+        /// scheduling appropriate scripting define symbol updates when necessary.
+        /// </summary>
+        /// <param name="importedAssets">Array of asset paths that were imported</param>
+        /// <param name="deletedAssets">Array of asset paths that were deleted</param>
+        /// <param name="movedAssets">Array of asset paths that were moved (unused)</param>
+        /// <param name="movedFromAssetPaths">Array of original paths for moved assets (unused)</param>
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets,
             string[] movedFromAssetPaths)
         {
+            // Prevent recursive processing and duplicate operations
             if (_isProcessing || _scheduled)
                 return;
 
+            // Check current state of the define symbol
             var defineExists = DefineUtility.IsDefined(XAPI_REGISTRY_EXISTS);
 
+            // Determine if xAPI Registry folder was added (and define should be set)
             var shouldAdd = !defineExists && importedAssets.Any(path =>
                 Path.GetFileName(path) == "xAPI.Registry" &&
                 AssetDatabase.IsValidFolder(path) &&
-                !path.EndsWith(".meta"));
+                !path.EndsWith(".meta")); // Ignore .meta files
 
+            // Determine if xAPI Registry folder was removed (and define should be unset)
             var shouldRemove = defineExists && deletedAssets.Any(path =>
                 Path.GetFileName(path) == "xAPI.Registry" &&
-                !path.EndsWith(".meta"));
+                !path.EndsWith(".meta")); // Ignore .meta files
             
+            // Exit if no relevant changes detected
             if (!shouldAdd && !shouldRemove)
                 return;
 
+            // Schedule the define symbol update operation
             _scheduled = true;
 
+            // Use delayed call to ensure all asset processing is complete
             EditorApplication.delayCall += () =>
             {
                 _isProcessing = true;
@@ -44,17 +83,20 @@ namespace OmiLAXR.xAPI.Editor
                 {
                     if (shouldAdd)
                     {
+                        // Add the define symbol when xAPI Registry is detected
                         DefineUtility.Set(XAPI_REGISTRY_EXISTS);
-                        Debug.Log("xAPI.Registry does exist! \"XAPI_REGISTRY_EXISTS\" was set. You can start working with xAPI.Registry.");
+                        DebugLog.xAPI.Print("xAPI.Registry does exist! \"XAPI_REGISTRY_EXISTS\" was set. You can start working with xAPI.Registry.");
                     }
                     else if (shouldRemove)
                     {
+                        // Remove the define symbol when xAPI Registry is deleted
                         DefineUtility.Unset(XAPI_REGISTRY_EXISTS);
-                        Debug.LogError("xAPI.Registry folder deleted! \"XAPI_REGISTRY_EXISTS\" was removed. If you like to work with xAPI.Registry, please use xAPI4Unity to create it.");
+                        DebugLog.xAPI.Error("xAPI.Registry folder deleted! \"XAPI_REGISTRY_EXISTS\" was removed. If you like to work with xAPI.Registry, please use xAPI4Unity to create it.");
                     }
                 }
                 finally
                 {
+                    // Reset processing flags to allow future operations
                     _isProcessing = false;
                     _scheduled = false;
                 }

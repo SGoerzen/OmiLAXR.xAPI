@@ -1,3 +1,8 @@
+/*
+* SPDX-License-Identifier: AGPL-3.0-or-later
+* Copyright (C) 2025 Sergej Görzen <sergej.goerzen@gmail.com>
+* This file is part of OmiLAXR.xAPI.
+*/
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -622,6 +627,12 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement WithRef(Guid refId)
         {
             _refId = refId;
+            return this;
+        }
+
+        public xApiStatement WithRef(IStatement statement)
+        {
+            _refId = statement.GetId();
             return this;
         }
 
