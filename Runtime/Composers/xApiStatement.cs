@@ -56,7 +56,7 @@ namespace OmiLAXR.xAPI.Composers
 
         // Core statement components
         private readonly Guid _id = Guid.NewGuid();
-        private Guid _refId;
+        private Guid? _refId = null;
         private xAPI_Verb _verb; // The action performed
         private xAPI_Activity _activity; // The object/activity acted upon
         private xAPI_Actor _actor; // The person/entity performing the action

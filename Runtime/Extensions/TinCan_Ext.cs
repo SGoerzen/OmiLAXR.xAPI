@@ -96,7 +96,8 @@ namespace OmiLAXR.xAPI.Extensions
                     s.GetInstructor(), 
                     s.GetTeam(), 
                     s.GetTeamMembers(), 
-                    s.GetRegistration()),
+                    s.GetRegistration(),
+                    s.GetRefId()),
                     
                 // Result with performance and outcome data
                 result = s.GetResultExtensions().ToTinCanResult(
@@ -104,7 +105,8 @@ namespace OmiLAXR.xAPI.Extensions
                     s.GetScore(), 
                     s.GetCompletion(), 
                     s.GetSuccess(), 
-                    s.GetResponse()),
+                    s.GetResponse(),
+                    s.GetDuration()),
             };
             return stmt;
         }
@@ -138,7 +140,7 @@ namespace OmiLAXR.xAPI.Extensions
             };
             
             // Add statement reference if provided for linked statements
-            if (refId != null)
+            if (refId.HasValue)
                 ctx.statement = new tc.StatementRef(refId.Value);
 
             return ctx;

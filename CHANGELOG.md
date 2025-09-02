@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.2] - 2025-08-25
+
+### Fixed
+- `StressLevelComposer` was missing its required `xApiComposer` class.
+- `WithRef()` and `WithDuration()` methods did not correctly apply reference or duration data to the resulting xAPI statement.
+
+---
+
 ## [2.1.1] - 2025-08-17
 
 ### Added
