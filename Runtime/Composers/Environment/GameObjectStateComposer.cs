@@ -9,14 +9,14 @@ using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.System;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Environment
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from GameObject state changes.
     /// Tracks environmental modifications like object creation, destruction, and state changes
     /// within the virtual learning environment for comprehensive activity analysis.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Game Object State Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Game Object State Composer")]
     [Description("Creates statements:\n- actor deleted vrObject with vrObjectName(String)")]
     public sealed class GameObjectStateComposer : xApiComposer<GameObjectStateTrackingBehaviour>
     {

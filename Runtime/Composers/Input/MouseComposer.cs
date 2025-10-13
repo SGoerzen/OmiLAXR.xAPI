@@ -9,14 +9,14 @@ using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Input
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from mouse input interactions.
     /// Generates comprehensive input-based statements for mouse clicks, presses, scrolling, and movement,
     /// capturing detailed user interaction patterns with mouse position and button-specific context.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Mouse Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Mouse Composer")]
     [Description("Creates statements:\n- actor clicked mouse with mouseButton(String), mousePosition(Vector3)" +
                  "\n- actor pressed mouse with mouseButton(String), mousePosition(Vector3)" +
                  "\n- actor scrolled mouse with mouseButton(String), mousePosition(Vector3), scrollValue(Float)" +
@@ -49,10 +49,10 @@ namespace OmiLAXR.xAPI.Composers
             tb.OnClicked.AddHandler((owner, args) =>
             {
                 var statement = actor.Does(xapi.generic.verbs.clicked)
-                    .Activity(xapi.generic.activities.mouse, 
-                        xapi.generic.extensions.activity
-                            .mouseButton(args.MouseButton)
-                            .mousePosition(args.MousePosition));
+                    .Activity(xapi.generic.activities.mouse)
+                    .WithExtension(xapi.generic.extensions.activity
+                        .mouseButton(args.MouseButton)
+                        .mousePosition(args.MousePosition));
                 SendStatement(owner, statement);
             });
             
@@ -60,10 +60,10 @@ namespace OmiLAXR.xAPI.Composers
             tb.OnPressedDown.AddHandler((owner, args) =>
             {
                 var statement = actor.Does(xapi.generic.verbs.pressed)
-                    .Activity(xapi.generic.activities.mouse, 
-                        xapi.generic.extensions.activity
-                            .mouseButton(args.MouseButton)
-                            .mousePosition(args.MousePosition));
+                    .Activity(xapi.generic.activities.mouse)
+                    .WithExtension(xapi.generic.extensions.activity
+                        .mouseButton(args.MouseButton)
+                        .mousePosition(args.MousePosition));
                 SendStatement(owner, statement);
             });
             
@@ -71,11 +71,11 @@ namespace OmiLAXR.xAPI.Composers
             tb.OnScrolledWheel.AddHandler((owner, args, value) =>
             {
                 var statement = actor.Does(xapi.generic.verbs.scrolled)
-                    .Activity(xapi.generic.activities.mouse, 
-                        xapi.generic.extensions.activity
-                            .mouseButton(args.MouseButton)
-                            .mousePosition(args.MousePosition)
-                            .scrollValue(value));
+                    .Activity(xapi.generic.activities.mouse)
+                    .WithExtension(xapi.generic.extensions.activity
+                        .mouseButton(args.MouseButton)
+                        .mousePosition(args.MousePosition)
+                        .scrollValue(value));
                 SendStatement(owner, statement);
             });
             

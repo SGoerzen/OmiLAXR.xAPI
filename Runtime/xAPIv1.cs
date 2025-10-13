@@ -74,6 +74,7 @@ namespace OmiLAXR.xAPI
             return v;
         }
 
+        
         /// <summary>
         /// Creates a TinCan Activity from xAPI Registry activity definition with optional extensions.
         /// Converts xAPI Registry activity definitions into TinCan format including activity
@@ -87,7 +88,7 @@ namespace OmiLAXR.xAPI
         {            
             var a = new Activity
             {
-                id = activity.CreateValidId(uri),                          // Resolve activity URI
+                id = activity.CreateValidUri(uri),                          // Resolve activity URI
                 definition = activity.ToTinCanActivityDefinition()         // Convert definition with multilingual content
             };
 

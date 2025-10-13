@@ -2,9 +2,9 @@
     "name": "OmiLAXR.xAPI.Editor",
     "rootNamespace": "OmiLAXR.xAPI.Editor",
     "references": [
-        "GUID:92238810d69db43818b28b85251b4b3c",
-        "GUID:fb9cf0ea98c6e4a57a837fdb3ccaa327",
-        "GUID:8f840851d92754fd89291b0b86a5a78b"
+        "OmiLAXR",
+        "OmiLAXR.Editor",
+        "OmiLAXR.xAPI"
     ],
     "includePlatforms": [
         "Editor"

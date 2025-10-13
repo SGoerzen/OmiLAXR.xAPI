@@ -1,4 +1,4 @@
-﻿/*
+﻿ /*
 * SPDX-License-Identifier: AGPL-3.0-or-later
 * Copyright (C) 2025 Sergej Görzen <sergej.goerzen@gmail.com>
 * This file is part of OmiLAXR.xAPI.
@@ -10,16 +10,16 @@ using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Environment
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from object interaction events.
     /// Generates environment-based statements when learners interact with, grab, touch, or release
     /// virtual objects, providing detailed interaction pattern analysis with hand-specific context.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Interactable Composer (xAPI)"),
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Interactable Composer"),
      Description("Creates statements:\n- actor interacted/grabbed/touched/released vrObject with vrObjectName(String), hand(Hand)")]
-    public class InteractableComposer : xApiComposer<InteractableTrackingBehaviour>
+    public sealed class InteractableComposer : xApiComposer<InteractableTrackingBehaviour>
     {
         /// <summary>
         /// Categorizes this composer under environment tracking for organizational purposes.
@@ -81,6 +81,16 @@ namespace OmiLAXR.xAPI.Composers
             {
                 var go = e.Target;
                 var stmt = actor.Does(xapi.virtualReality.verbs.released)
+                    .Activity(xapi.virtualReality.activities.vrObject)
+                    .WithExtension(xapi.virtualReality.extensions.activity.vrObjectName(go.GetTrackingName()))
+                    .WithExtension(xapi.gestures.extensions.activity.hand(e.Hand));
+                SendStatement(owner, stmt);
+            });
+            
+            tb.OnPointed.AddHandler((owner, e) =>
+            {
+                var go = e.Target;
+                var stmt = actor.Does(xapi.virtualReality.verbs.pointed)
                     .Activity(xapi.virtualReality.activities.vrObject)
                     .WithExtension(xapi.virtualReality.extensions.activity.vrObjectName(go.GetTrackingName()))
                     .WithExtension(xapi.gestures.extensions.activity.hand(e.Hand));

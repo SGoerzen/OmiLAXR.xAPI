@@ -71,7 +71,7 @@ namespace OmiLAXR.xAPI.Composers.HigherComposers
             targetPipeline = GetPipeline<TActorOfPipeline>();
             
             // Initialize statement builder with URI context and author metadata
-            actor = new xApiStatement.Builder(GetUri(), GetAuthor());
+            actor = new xApiStatement.Builder(GetUri(), GetAuthor(), this);
         }
     }
 }

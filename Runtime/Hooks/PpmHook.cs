@@ -20,7 +20,7 @@ namespace OmiLAXR.xAPI.Hooks
     /// </summary>
     [AddComponentMenu("OmiLAXR / 5) Hooks / Peripheral Physiological Measures (PPM) Hook (xAPI)")]
     [Description("Adds peripheral physiological measures values to each statement.")]
-    public class PpmHook : xApiHook
+    public sealed class PpmHook : xApiHook
     {
         /// <summary>
         /// Processes xAPI statements by enriching them with available physiological measurement data.

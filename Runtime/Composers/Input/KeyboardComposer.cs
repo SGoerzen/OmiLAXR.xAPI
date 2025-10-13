@@ -9,16 +9,16 @@ using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Input
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from keyboard input interactions.
     /// Generates input-based statements when keyboard press and release events are detected,
     /// tracking learner interaction patterns with keyboard-based interfaces.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Keyboard Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Keyboard Composer")]
     [Description("Creates statements:\n- actor pressed/released keyboard with keyboardButton(String)")]
-    public class KeyboardComposer : xApiComposer<KeyboardTrackingBehaviour>
+    public sealed class KeyboardComposer : xApiComposer<KeyboardTrackingBehaviour>
     {
         /// <summary>
         /// Categorizes this composer under input tracking for organizational purposes.

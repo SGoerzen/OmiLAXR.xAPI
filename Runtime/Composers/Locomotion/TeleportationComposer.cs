@@ -12,16 +12,16 @@ using OmiLAXR.TrackingBehaviours.Learner;
 using OmiLAXR.xAPI.Composers;
 using UnityEngine;
 
-namespace OmiLAXR.UnityXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Locomotion
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from VR teleportation interactions.
     /// Generates locomotion-based statements when teleportation events occur, capturing spatial navigation
     /// patterns and movement behaviors within virtual reality learning environments.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Teleportation Composer (xAPI)"),
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Teleportation Composer"),
      Description("Creates statements:\n- actor teleported teleportPoint/teleportArea with vrObjectName(String), hand(Hand) and result startValue(Vector3), endValue(Vector3), cameraYOffset(Float)")]
-    public class TeleportationComposer : xApiComposer<TeleportationTrackingBehaviour>
+    public sealed class TeleportationComposer : xApiComposer<TeleportationTrackingBehaviour>
     {
         /// <summary>
         /// Categorizes this composer under locomotion tracking for organizational purposes.
@@ -54,11 +54,11 @@ namespace OmiLAXR.UnityXR.xAPI.Composers
                
                // Create comprehensive teleportation statement with spatial and contextual data
                var stmt = actor.Does(xapi.virtualReality.verbs.teleported)
+                   .Activity(activity)
                    .WithResult(xapi.generic.extensions.result
                        .startValue(args.StartState.FloorPosition)  // Starting floor position
                        .endValue(args.EndState.FloorPosition))     // Ending floor position
                    .WithResult(xapi.virtualReality.extensions.result.cameraYOffset(args.CameraYOffset)) // Camera height offset
-                   .Activity(activity)
                    .WithExtension(xapi.virtualReality.extensions.activity
                        .vrObjectName(args.Target.gameObject.GetTrackingName())) // Target object name
                    .WithExtension(xapi.gestures.extensions.activity.hand(args.Hand))         // Hand used for teleportation

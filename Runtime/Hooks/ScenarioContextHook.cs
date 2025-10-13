@@ -21,7 +21,7 @@ namespace OmiLAXR.xAPI.Hooks
     /// </summary>
     [AddComponentMenu("OmiLAXR / 5) Hooks / Scenario Context Hook (xAPI)")]
     [Description("Adds language by <ScenarioLanguage>, platform by <PlatformInformation>, fps by <FpsMonitor>, registration by <Registration> and active scene, game and game version to the context of all statements.")]
-    public class ScenarioContextHook : xApiHook
+    public sealed class ScenarioContextHook : xApiHook
     {
         /// <summary>
         /// Processes xAPI statements by enriching them with comprehensive scenario context information.

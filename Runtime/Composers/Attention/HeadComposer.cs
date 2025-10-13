@@ -9,16 +9,16 @@ using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Attention
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from head gesture tracking.
     /// Generates attention and engagement-related statements when head nods and shakes are detected,
     /// capturing non-verbal learner feedback and engagement indicators.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Head Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Head Composer")]
     [Description("Creates statements:\n- actor nodded/shaked head with timeSpan(TimeSpan), numberOfGestures(Int)")]
-    public class HeadComposer : xApiComposer<HeadTrackingBehaviour>
+    public sealed class HeadComposer : xApiComposer<HeadTrackingBehaviour>
     {
         /// <summary>
         /// Categorizes this composer under attention tracking for organizational purposes.
