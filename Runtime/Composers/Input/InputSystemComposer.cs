@@ -9,16 +9,16 @@ using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Input
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from Unity Input System interactions.
     /// Generates input-based statements when button press and release events are detected,
     /// supporting various input devices and providing device-specific context information.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Input System Composer (xAPI)"),
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Input System Composer"),
      Description("Creates statements:\n- actor pressed action with actionName(String)")]
-    public class InputSystemComposer : xApiComposer<InputSystemTrackingBehaviour>
+    public sealed class InputSystemComposer : xApiComposer<InputSystemTrackingBehaviour>
     {
         /// <summary>
         /// Key used for storing and retrieving button press statements for press-release correlation.
@@ -53,7 +53,7 @@ namespace OmiLAXR.xAPI.Composers
             {
                 var stmt = actor.Does(xapi.virtualReality.verbs.pressed)
                     .Activity(xapi.virtualReality.activities.action)
-                    .WithResult(xapi.generic.extensions.result.deviceId(args.DeviceId).deviceName(args.DeviceName))
+                    .WithContext(xapi.generic.extensions.context.deviceId(args.DeviceId).deviceName(args.DeviceName))
                     .WithExtension(xapi.virtualReality.extensions.activity
                         .actionName(args.ButtonName));
                 
@@ -70,7 +70,7 @@ namespace OmiLAXR.xAPI.Composers
                 
                 var stmt = actor.Does(xapi.virtualReality.verbs.released)
                     .Activity(xapi.virtualReality.activities.action)
-                    .WithResult(xapi.generic.extensions.result.deviceId(args.DeviceId).deviceName(args.DeviceName))
+                    .WithContext(xapi.generic.extensions.context.deviceId(args.DeviceId).deviceName(args.DeviceName))
                     .WithExtension(xapi.virtualReality.extensions.activity
                         .actionName(args.ButtonName))
                     .WithRef(refStmt); // Reference the original press statement

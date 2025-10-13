@@ -9,22 +9,26 @@ using OmiLAXR.Components;
 using OmiLAXR.Composers;
 using OmiLAXR.Extensions;
 using OmiLAXR.TrackingBehaviours.Learner;
+using OmiLAXR.Types;
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Environment
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from UI element interactions.
     /// Generates comprehensive environment-based statements for various UI controls including
     /// buttons, sliders, dropdowns, toggles, input fields, and scrollbars with element-specific context.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / UI Composer (xAPI)")]
-    [Description("Creates statements:\n- actor clicked uiElement with uiElementType('button'), vrObjectName(String), uiElementValue(text)" +
-                 "\n- actor changed uiElement with uiElementType('slider'), vrObjectName(String), uiElementValue(String), uiElementMinValue(Float), uiElementMaxValue(Float)" +
-                 "\n- actor changed uiElement with uiElementType('dropdown'), vrObjectName(String), uiElementValue(String), uiElementMinValue(0), uiElementMaxValue(Int), uiElementOptions(String[])" +
-                 "\n- actor changed uiElement with uiElementType('toggle'), vrObjectName(String), uiElementValue(Boolean), uiElementMinValue(false), uiElementMaxValue(true)" +
-                 "\n- actor changed uiElement with uiElementType('inputField'), vrObjectName(String), uiElementValue(String)" +
-                 "\n- actor changed uiElement with uiElementType('scrollbar'), vrObjectName(String), uiElementValue(String)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] UI Composer")]
+    [Description(
+        "Creates statements:" +
+        "\n- actor hovered uiElement (verb: hovered) with activity: uiElement; values: uiElementType, vrObjectName, uiElementContent; result: hoverDuration, pressDuration, pressesInHover, totalPresses" +
+        "\n- actor exited uiElement (verb: exited) with activity: uiElement; values: uiElementType, vrObjectName, uiElementContent; result: hoverDuration, pressDuration, pressesInHover, totalPresses; statement may reference prior hovered" +
+        "\n- actor clicked uiElement (verb: clicked) with activity: uiElement; values: uiElementType, vrObjectName, uiElementContent; result: hover/press metrics; statement may reference prior hovered" +
+        "\n- actor clicked button (verb: clicked) with activity: uiElement; extension: uiElementType('button'), vrObjectName, uiElementValue(text)" +
+        "\n- actor changed slider/dropdown/toggle/inputField/scrollbar (verb: changed) with activity: uiElement; extension includes uiElementType, vrObjectName, uiElementValue and element-specific fields (min/max/options as applicable); statement may reference prior hovered"
+    )]
     public sealed class UiComposer : xApiComposer<UiTrackingBehaviour>
     {
         /// <summary>
@@ -40,6 +44,44 @@ namespace OmiLAXR.xAPI.Composers
         /// <returns>Author information including name and contact details</returns>
         public override Author GetAuthor()
             => new Author("Sergej Görzen", "goerzen@cs.rwth-aachen.de");
+
+        /// <summary>
+        /// Adds pointer / device context and pointer-event derived metrics to the statement.
+        /// Populates context.deviceName and result fields: hoverDuration, pressDuration, pressesInHover, totalPresses.
+        /// Called for hover/click events where InteractionEventHandler provides timing/count metrics.
+        /// </summary>
+        /// <param name="stmt">Statement to augment</param>
+        /// <param name="args">Pointer event args containing device and timing/count metrics</param>
+        private void MapPointerEventsData(xApiStatement stmt, InteractionEventHandler.InteractionEventArgs args)
+        {
+            stmt
+                .WithContext(xapi.generic.extensions.context.deviceName(args.Device))
+                .WithValue(xapi.generic.extensions.result
+                    .hoverDuration(Duration.FromSeconds(args.HoverDuration))
+                    .pressDuration(Duration.FromSeconds(args.PressDuration))
+                    .pressesInHover(args.PressesInHover)
+                    .totalPresses(args.TotalPresses)
+                );
+        }
+
+        /// <summary>
+        /// Attempts to find and attach a previously stored 'hovered' statement as a reference.
+        /// If a reference is found, sets the duration between the new statement's creation time and
+        /// the referenced statement's creation time, and attaches the reference. Optionally erases the stored ref.
+        /// </summary>
+        /// <param name="selectable">UI selectable used as key for stored statements</param>
+        /// <param name="stmt">Statement to update with reference and duration (if found)</param>
+        /// <param name="erase">If true, remove the stored reference after restoring it</param>
+        private void DetectRefStmt(Selectable selectable, xApiStatement stmt, bool erase = false)
+        {
+            var refStmt = RestoreStatement(selectable.GetHashCode(), erase);
+            if (refStmt != null)
+            {
+                var duration = stmt.CreatedAt - refStmt.CreatedAt;
+                stmt.WithDuration(duration)
+                    .WithRef(refStmt);
+            }
+        }
         
         /// <summary>
         /// Configures xAPI statement composition for various UI element interaction events.
@@ -49,51 +91,89 @@ namespace OmiLAXR.xAPI.Composers
         /// <param name="tb">UiTrackingBehaviour instance to bind event handlers to</param>
         protected override void Compose(UiTrackingBehaviour tb)
         {
+            tb.OnHoverStarted.AddHandler((owner, selectable, args) =>
+            {
+                var stmt = actor.Does(xapi.generic.verbs.hovered)
+                    .Activity(xapi.virtualReality.activities.uiElement)
+                    .WithValue(xapi.virtualReality.extensions.activity
+                        .uiElementType(selectable.GetUiElementType())
+                        .vrObjectName(selectable.GetTrackingName())
+                        .uiElementContent(selectable.GetTextOrDefault())
+                    );
+                MapPointerEventsData(stmt, args);
+                StoreStatement(selectable.GetHashCode(), stmt);
+                SendStatement(owner, stmt);
+            });
+            tb.OnHoverEnded.AddHandler((owner, selectable, args) =>
+            {
+                var stmt = actor.Does(xapi.generic.verbs.exited)
+                    .Activity(xapi.virtualReality.activities.uiElement)
+                    .WithValue(xapi.virtualReality.extensions.activity
+                        .uiElementType(selectable.GetUiElementType())
+                        .vrObjectName(selectable.GetTrackingName())
+                        .uiElementContent(selectable.GetTextOrDefault())
+                    );
+                DetectRefStmt(selectable, stmt);
+                MapPointerEventsData(stmt, args);
+                
+                SendStatement(owner, stmt);
+            });
+            tb.OnClicked.AddHandler((owner, selectable, args) =>
+            {
+                var refStmt = RestoreStatement(selectable.GetHashCode());
+                var stmt = actor.Does(xapi.generic.verbs.clicked)
+                    .Activity(xapi.virtualReality.activities.uiElement)
+                    .WithRef(refStmt)
+                    .WithValue(xapi.virtualReality.extensions.activity
+                        .uiElementType(selectable.GetUiElementType())
+                        .vrObjectName(selectable.GetTrackingName())
+                        .uiElementContent(selectable.GetTextOrDefault())
+                    );
+                DetectRefStmt(selectable, stmt);
+                MapPointerEventsData(stmt, args);
+                SendStatement(owner, stmt);
+            });
             // Handle button click events with text content
             tb.OnClickedButton.AddHandler((owner, button) =>
             {
-                var buttonName = button.gameObject.GetTrackingName();
-                var text = button.GetTextOrDefault(); // Get button text or default value
-                
                 var stmt = actor.Does(xapi.generic.verbs.clicked)
+                    .Activity(xapi.virtualReality.activities.uiElement)
                     .WithExtension(xapi.virtualReality.extensions.activity
-                        .uiElementType("button")
-                        .vrObjectName(buttonName)
-                        .uiElementValue(text))
-                    .Activity(xapi.virtualReality.activities.uiElement);
+                        .uiElementType(button.GetUiElementType())
+                        .vrObjectName(button.GetTrackingName())
+                        .uiElementValue(button.GetTextOrDefault()));
+                DetectRefStmt(button, stmt);
                 SendStatement(owner, stmt);
             });
             
             // Handle slider value changes with min/max range context
             tb.OnChangedSlider.AddHandler((owner, slider, newValue) =>
             {
-                var maxValue = slider.maxValue;
-                var minValue = slider.minValue;
-                var sliderName = slider.GetTrackingName();
                 var stmt = actor.Does(xapi.generic.verbs.changed)
+                    .Activity(xapi.virtualReality.activities.uiElement)
                     .WithExtension(xapi.virtualReality.extensions.activity
-                        .uiElementType("slider")
-                        .vrObjectName(sliderName)
+                        .uiElementType(slider.GetUiElementType())
+                        .vrObjectName(slider.GetTrackingName())
                         .uiElementValue(newValue)
-                        .uiElementMinValue(minValue)
-                        .uiElementMaxValue(maxValue))
-                    .Activity(xapi.virtualReality.activities.uiElement);
+                        .uiElementMinValue(slider.minValue)
+                        .uiElementMaxValue(slider.maxValue));
+                DetectRefStmt(slider, stmt);
                 SendStatement(owner, stmt);
             });
             
             // Handle dropdown selection changes with available options context
             tb.OnChangedDropdown.AddHandler((owner, dropdown, newValue, options) =>
             {
-                var value = options[newValue]; // Get selected option text
                 var stmt = actor.Does(xapi.generic.verbs.changed)
+                    .Activity(xapi.virtualReality.activities.uiElement)
                     .WithExtension(xapi.virtualReality.extensions.activity
-                        .uiElementType("dropdown")
+                        .uiElementType(dropdown.GetUiElementType())
                         .vrObjectName(dropdown.GetTrackingName())
-                        .uiElementValue(value)
+                        .uiElementValue(options[newValue])
                         .uiElementMinValue(0)
                         .uiElementMaxValue(options.Length)
-                        .uiElementOptions(options)) // Include all available options
-                    .Activity(xapi.virtualReality.activities.uiElement);
+                        .uiElementOptions(options));
+                DetectRefStmt(dropdown, stmt);
                 SendStatement(owner, stmt);
             });
             
@@ -101,13 +181,15 @@ namespace OmiLAXR.xAPI.Composers
             tb.OnChangedToggle.AddHandler((owner, toggle, isChecked) =>
             {
                 var stmt = actor.Does(xapi.generic.verbs.changed)
-                    .WithExtension(xapi.virtualReality.extensions.activity
-                        .uiElementType("toggle")
+                        .Activity(xapi.virtualReality.activities.uiElement)
+                        .WithExtension(xapi.virtualReality.extensions.activity
+                        .uiElementType(toggle.GetUiElementType())
                         .vrObjectName(toggle.GetTrackingName())
                         .uiElementValue(isChecked)
                         .uiElementMinValue(false)  // Boolean min value
                         .uiElementMaxValue(true))  // Boolean max value
-                    .Activity(xapi.virtualReality.activities.uiElement);
+                    ;
+                DetectRefStmt(toggle, stmt);
                 SendStatement(owner, stmt);
             });
             
@@ -115,11 +197,13 @@ namespace OmiLAXR.xAPI.Composers
             tb.OnChangedInputField.AddHandler((owner, inputFieldSelectable, value) =>
             {
                 var stmt = actor.Does(xapi.generic.verbs.changed)
-                    .WithExtension(xapi.virtualReality.extensions.activity
-                        .uiElementType("inputField")
+                        .Activity(xapi.virtualReality.activities.uiElement)
+                        .WithExtension(xapi.virtualReality.extensions.activity
+                        .uiElementType(inputFieldSelectable.GetUiElementType())
                         .vrObjectName(inputFieldSelectable.GetTrackingName())
                         .uiElementValue(value))
-                    .Activity(xapi.virtualReality.activities.uiElement);
+                    ;
+                DetectRefStmt(inputFieldSelectable, stmt);
                 SendStatement(owner, stmt);
             });
             
@@ -127,12 +211,13 @@ namespace OmiLAXR.xAPI.Composers
             tb.OnChangedScrollbar.AddHandler((owner, scrollbar, value) =>
             {
                 var stmt = actor.Does(xapi.generic.verbs.changed)
-                    .WithExtension(xapi.virtualReality.extensions.activity
-                        .uiElementType("scrollbar")
+                        .Activity(xapi.virtualReality.activities.uiElement)
+                        .WithExtension(xapi.virtualReality.extensions.activity
+                        .uiElementType(scrollbar.GetUiElementType())
                         .vrObjectName(scrollbar.GetTrackingName())
                         .uiElementValue(value)
-                    )
-                    .Activity(xapi.virtualReality.activities.uiElement);
+                    );
+                DetectRefStmt(scrollbar, stmt);
                 SendStatement(owner, stmt);
             });
         }

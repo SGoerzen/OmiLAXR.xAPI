@@ -9,14 +9,14 @@ using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours.System;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.System
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from Unity application lifecycle events.
     /// Generates system-level statements when the game/application starts, ends, is paused/resumed, or gains/loses focus,
     /// providing comprehensive application usage analytics with Unity-specific context information.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / System Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] System Composer")]
     [Description("Creates statements:\n- actor started game with name(String)" +
                  "\n- actor ended game with name(String)" +
                  "\n- actor paused/resumed game with name(String)" +

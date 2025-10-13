@@ -27,6 +27,9 @@ namespace OmiLAXR.xAPI.Hooks
         /// </summary>
         protected readonly xAPI_Contexts xapi = new xAPI_Contexts();
 
+        private xApiRegistry _registry;
+        public xApiRegistry Registry => _registry ??= GetComponentInParent<xApiRegistry>();
+
         /// <summary>
         /// Processes generic IStatement instances by filtering for xAPI-specific statements.
         /// Ensures type safety by only processing xApiStatement instances and passing through

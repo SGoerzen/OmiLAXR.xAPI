@@ -1,5 +1,59 @@
 # Changelog
 
+## [2.2.0] - 2025-10-13
+
+### Breaking Changes
+- Aktualisierung der `TinCan.dll` auf einen eigenen Fork: [TinCan.NET Fork](https://github.com/SGoerzen/TinCan.NET).
+  - Unterstützung für xAPI 2.0 in Vorbereitung.
+  - Hinzugefügte Unterstützung für Attachments.
+  - Konsistentere URI-Verwendung.
+  - Newtonsoft.Json von v8 auf v13 aktualisiert.
+- Umstellung auf strikte Typen in `xAPI.Extensions`.
+  - Um diese zu nutzen, kopiere `xapi.config.json` über das Menü `OmiLAXR / Samples / Copy 'xapi.config.json'` und baue die `xAPI.Registry` neu auf.
+- Umbau des Statement Builders: `actor`, `Does` und `Activity` sind nun verpflichtend für gültige Statements.
+- Die `xAPI Platform String` wurde überarbeitet zum Format:  
+  `{UnityVersion}::{OmiLAXR.{Module}::{ComposerType}.{Composer}::{XRSDKVersion}`  
+  Beispiel:  
+  `UnityWindowsEditorv2022.3.62f2::OmiLAXR.xAPIv2.1.1::Other.FacialComposer::MetaXRv1.110.0`
+
+### Added
+- **Eye Tracking**:
+  - Neue Ereignisse wie `actor hovered/fixated/exited/saccaded/pursued vrObject`.
+  - Austauschbare Logiken für die Erkennung.
+  - [Vorschauvideo](https://youtu.be/nPS3H5GoF1Q)
+
+- **Facial Tracking**:
+  - Neue Ereignisse: `actor changed face`, `actor expressed emotion`.
+
+- **xAPI Features**:
+  - Unterstützung für xAPI Attachments.
+  - Vorbereitung für xAPI Version 2.0.0 (Standard bleibt 1.0.3, umschaltbar in `xAPI Registry`).
+  - Viele neue Definitionen in der Registry ([siehe Diff](https://gitlab.com/learntech-rwth/xapi/-/merge_requests/54/diffs)).
+
+- **UiComposer**:
+  - Neues Ereignis: `"Pointed"` zur Interaktionserkennung.
+  - Erfassung von Hover- und Druckdauer.
+  - Zählung von Klicks während Hover und Gesamtanzahl an Klicks.
+
+- **AreaComposer**:
+  - Neue Ereignisse: `"actor entered/exited area/room"`.
+
+- **StressComposer**:
+  - Neue Ereignisse: `"actor stressed/relaxed/increased/decreased/updated stress"`.
+
+- **Menu Items**:
+  - `OmiLAXR / xAPI / Copy 'xapi' folder from Samples`
+  - `OmiLAXR / xAPI / Copy 'xAPI.Registry' folder from Samples`
+  - `OmiLAXR / xAPI / Copy 'xapi.types.json' folder from Samples`
+
+- **Samples**:
+  - Beispielkonfiguration: `xapi.types.json` (weitere Details in xAPI4Unity v2.2.1)
+
+### Changed
+- Verbesserte Benutzerführung beim Erstellen von xAPI Statements (UX des Builders optimiert).
+
+---
+
 ## [2.1.2] - 2025-08-25
 
 ### Fixed

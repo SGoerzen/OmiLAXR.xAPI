@@ -15,7 +15,7 @@ namespace OmiLAXR.xAPI.Composers
     /// Provides common functionality for creating and managing xAPI statements.
     /// </summary>
     /// <typeparam name="T">A tracking behavior component that implements ITrackingBehaviour</typeparam>
-    public abstract class xApiComposer<T> : Composer<T>
+    public abstract class xApiComposer<T> : Composer<T, xApiStatement>
         where T : ActorPipelineComponent, ITrackingBehaviour
     {
         // Builder responsible for constructing xAPI statements
@@ -30,6 +30,9 @@ namespace OmiLAXR.xAPI.Composers
         /// </summary>
         protected static xAPI_Contexts xapi => xApiRegistry.definitions;
 
+        public xApiRegistry Registry { get; protected set; }
+        public override string GetDataStandardVersion() => Registry.version;
+        
         // Base URI for the xAPI statements
         protected string Uri = "";
 
@@ -46,15 +49,12 @@ namespace OmiLAXR.xAPI.Composers
         /// </summary>
         protected override void OnEnable()
         {
+            Registry = GetComponentInParent<xApiRegistry>();
             // Try to find a global xAPI registry in parent components
-            var globalUri = GetComponentInParent<xApiRegistry>();
-            
-            // Update URI if a global registry is found and enabled
-            if (globalUri && globalUri.enabled)
-                Uri = globalUri.uri;
+            Uri = Registry.uri;
             
             // Initialize the actor builder with the current URI and author
-            actor = new xApiStatement.Builder(GetUri(), GetAuthor());
+            actor = new xApiStatement.Builder(GetUri(), GetAuthor(), this);
             
             // Call the base OnEnable method
             base.OnEnable();

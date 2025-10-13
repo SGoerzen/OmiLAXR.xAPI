@@ -1,19 +1,28 @@
 /*
- * SPDX-License-Identifier: AGPL-3.0-or-later
- * Copyright (C) 2025 Sergej Görzen <sergej.goerzen@gmail.com>
- * This file is part of OmiLAXR.xAPI.
- */
+* SPDX-License-Identifier: AGPL-3.0-or-later
+* Copyright (C) 2025 Sergej Görzen <sergej.goerzen@gmail.com>
+* This file is part of OmiLAXR.xAPI.
+*/
 #if XAPI_REGISTRY_EXISTS
+using System.ComponentModel;
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours;
+using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Physiology
 {
     /// <summary>
     /// Composer responsible for handling and logging stress level tracking events.
     /// Subscribes to various stress-related events and logs their occurrences.
     /// </summary>
-    public class StressLevelComposer : xApiComposer<StressLevelTrackingBehaviour>
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Stress Level Composer")]
+    [Description("Creates statements:\n" +
+                 "- actor stressed stress\n" +
+                 "- actor relaxed stress\n" +
+                 "- actor increased stress\n" +
+                 "- actor decreased stress\n" +
+                 "- actor updated stress")]
+    public sealed class StressLevelComposer : xApiComposer<StressLevelTrackingBehaviour>
     {
         /// <summary>
         /// Specifies the composer group as Physiology.
@@ -35,35 +44,47 @@ namespace OmiLAXR.xAPI.Composers
         /// <param name="tb">The stress level tracking behavior to compose</param>
         protected override void Compose(StressLevelTrackingBehaviour tb)
         {
-            // Log when relaxation is detected
-            tb.OnRelaxationDetected.AddHandler((owner, value) =>
-            {
-                OmiLAXR.DebugLog.OmiLAXR.Print($"OnRelaxationDetected: {value}");
-            });
-
-            // Log when stress is detected
+            // State transitions
             tb.OnStressDetected.AddHandler((owner, value) =>
             {
-                OmiLAXR.DebugLog.OmiLAXR.Print($"OnStressDetected: {value}");
+                var stmt = actor.Does(xapi.ppm.verbs.stressed)
+                    .Activity(xapi.ppm.activities.stress)
+                    .WithResult(xapi.ppm.extensions.result.stressScore(value));
+                SendStatement(owner, stmt);
             });
 
-            // Log when stress level decreases
-            tb.OnStressLevelDecreased.AddHandler((owner, value) =>
+            tb.OnRelaxationDetected.AddHandler((owner, value) =>
             {
-                OmiLAXR.DebugLog.OmiLAXR.Print($"OnStressLevelDecreased: {value}");
+                var stmt = actor.Does(xapi.ppm.verbs.relaxed)
+                    .Activity(xapi.ppm.activities.stress)
+                    .WithResult(xapi.ppm.extensions.result.stressScore(value));
+                SendStatement(owner, stmt);
             });
 
-            // Log when stress level increases
-            tb.OnStressLevelIncreased.AddHandler((owner, value) =>
+            tb.OnStressLevelIncreased.AddHandler((owner, value, delta) =>
             {
-                OmiLAXR.DebugLog.OmiLAXR.Print($"OnStressLevelIncreased: {value}");
+                var stmt = actor.Does(xapi.ppm.verbs.increased)
+                    .Activity(xapi.ppm.activities.stress)
+                    .WithResult(xapi.ppm.extensions.result.stressScore(value).delta(delta));
+                SendStatement(owner, stmt);
             });
 
-            // Log general stress level updates
-            tb.OnStressLevelUpdated.AddHandler((owner, value) =>
+            tb.OnStressLevelDecreased.AddHandler((owner, value, delta) =>
             {
-                OmiLAXR.DebugLog.OmiLAXR.Print($"OnStressLevelUpdated: {value}");
+                var stmt = actor.Does(xapi.ppm.verbs.decreased)
+                    .Activity(xapi.ppm.activities.stress)
+                    .WithResult(xapi.ppm.extensions.result.stressScore(value).delta(delta));
+                SendStatement(owner, stmt);
             });
+
+            tb.OnStressLevelUpdated.AddHandler((owner, value, delta) =>
+            {
+                var stmt = actor.Does(xapi.ppm.verbs.updated)
+                    .Activity(xapi.ppm.activities.stress)
+                    .WithResult(xapi.ppm.extensions.result.stressScore(value).delta(delta));
+                SendStatement(owner, stmt);
+            });
+
         }
     }
 }

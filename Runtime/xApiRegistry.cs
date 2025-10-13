@@ -3,7 +3,10 @@
 * Copyright (C) 2025 Sergej Görzen <sergej.goerzen@gmail.com>
 * This file is part of OmiLAXR.xAPI.
 */
+
+using System.Collections.Generic;
 using System.ComponentModel;
+using TinCan;
 using UnityEngine;
 using xAPI.Registry;
 
@@ -34,7 +37,10 @@ namespace OmiLAXR.xAPI
         /// requirements for semantic interoperability and data exchange.
         /// </summary>
         public string uri = "https://xapi.elearn.rwth-aachen.de/definitions";
-
+        
+        [TCAPIVersionDropdown]
+        [SerializeField, InspectorName("xAPI Version")] public string version = "1.0.3";
+        
         // Note: TinCan.TCAPIVersion configuration commented out for future use
         // May be needed for explicit xAPI version control in advanced scenarios
         //private static TinCan.TCAPIVersion version = TinCan.TCAPIVersion.latest();

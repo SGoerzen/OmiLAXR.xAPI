@@ -11,16 +11,16 @@ using OmiLAXR.TrackingBehaviours;
 using OmiLAXR.xAPI.Composers;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI
+namespace OmiLAXR.xAPI.Composers.Environment
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from object transform changes.
     /// Generates environment-based statements when objects are moved, rotated, or scaled,
     /// capturing spatial manipulation patterns with comprehensive positional and change data.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Transform Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Transform Composer")]
     [Description("Creates statements:\n- actor moved/rotated/scaled vrObject with vrObjectName(String) and result position(Vector3), rotation(Vector3), scale(Vector3), startValue(Vector3), endValue(Vector3)")]
-    public class TransformComposer : xApiComposer<TransformTrackingBehaviour>
+    public sealed class TransformComposer : xApiComposer<TransformTrackingBehaviour>
     {
         /// <summary>
         /// Categorizes this composer under environment tracking for organizational purposes.

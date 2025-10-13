@@ -9,16 +9,16 @@ using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.Physiology
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from heart rate tracking data.
     /// Generates physiological measurement statements when heart rate events are detected.
     /// Currently marked as not implemented - serves as a template for future heart rate analytics integration.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Heart Rate Composer (xAPI)")]
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Heart Rate Composer")]
     [Description("Creates statements:\n- actor measured heart rate with heartRate(Int)")]
-    public class HeartRateComposer : xApiComposer<HeartRateTrackingBehaviour>
+    public sealed class HeartRateComposer : xApiComposer<HeartRateTrackingBehaviour>
     {
         /// <summary>
         /// Categorizes this composer under physiological tracking for organizational purposes.
@@ -44,7 +44,30 @@ namespace OmiLAXR.xAPI.Composers
         {
             // Disable the component to prevent unnecessary processing
             enabled = false;
-            throw new System.NotImplementedException();
+            tb.OnHeartBeat.AddHandler((sender, hr) =>
+            {
+                var stmt = actor.Does(xapi.ppm.verbs.measured)
+                    .Activity(xapi.ppm.activities.heartRate)
+                    .WithValue(xapi.ppm.extensions.result.heartRate(hr));
+                SendStatement(sender, stmt);
+            });
+            tb.OnStatsUpdated.AddHandler((sender, stats) =>
+            {
+                var stmt = actor.Does(xapi.ppm.verbs.updated)
+                              .Activity(xapi.ppm.activities.heartRate)
+                              .WithResult(
+                                  xapi.ppm.extensions.result.hrBpmMean((int)Mathf.Round(stats.meanBpm))
+                                      .hrBpmVariance(stats.varianceBpm)
+                                      .hrBpmStd(stats.stdBpm)
+                                      .hrvSdnnMs(stats.sdnnMs)
+                                      .hrvRmssdMs(stats.rmssdMs)
+                                      .hrvPnn50(stats.pnn50)
+                              )
+                              .WithContext(
+                                  xapi.ppm.extensions.context.windowSeconds(stats.windowSeconds).method("BPM→IBI approx")
+                              );
+                SendStatement(sender, stmt);
+            });
         }
     }
 }

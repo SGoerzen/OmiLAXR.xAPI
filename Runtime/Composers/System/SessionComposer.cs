@@ -10,17 +10,17 @@ using OmiLAXR.Context;
 using OmiLAXR.TrackingBehaviours.Learner;
 using UnityEngine;
 
-namespace OmiLAXR.xAPI.Composers
+namespace OmiLAXR.xAPI.Composers.System
 {
     /// <summary>
     /// xAPI composer for creating learning analytics statements from session lifecycle events.
     /// Generates system-level statements when learning sessions start and end, providing
     /// temporal boundaries for analytics analysis and session identification via UUID.
     /// </summary>
-    [AddComponentMenu("OmiLAXR / 4) Composers / Session Composer (xAPI)"),
+    [AddComponentMenu("OmiLAXR / 4) Composers / [xAPI] Session Composer"),
     Description("Creates statements: \n- actor started session with timestamp(DateTime), name(UUID) " +
                 "\n- actor ended session with timestamp(DateTime), name(UUID)")]
-    public class SessionComposer : xApiComposer<SessionTrackingBehaviour>
+    public sealed class SessionComposer : xApiComposer<SessionTrackingBehaviour>
     {
         /// <summary>
         /// Categorizes this composer under system tracking for organizational purposes.

@@ -9,6 +9,7 @@ using System.Linq;
 using OmiLAXR.Composers;
 using OmiLAXR.Extensions;
 using OmiLAXR.TrackingBehaviours;
+using OmiLAXR.Types;
 using OmiLAXR.Utils;
 using OmiLAXR.xAPI.Extensions;
 using TinCan;
@@ -27,31 +28,41 @@ namespace OmiLAXR.xAPI.Composers
         /// <summary>
         /// Builder class for creating xAPI statements with fluent API pattern.
         /// </summary>
-        public class Builder
+        public sealed class Builder
         {
             internal readonly Author Author; // The statement author/authority
             internal readonly string Uri; // Base URI for identifiers
-
+            internal readonly IComposer Composer;
+            
             /// <summary>
             /// Creates a new Builder with the specified URI and author.
             /// </summary>
-            public Builder(string uri, Author author)
+            internal Builder(string uri, Author author, IComposer composer)
             {
                 Uri = uri;
                 Author = author;
+                Composer = composer;
             }
-
-            /// <summary>
-            /// Creates a new xApiStatement with the specified verb.
-            /// </summary>
-            public xApiStatement Verb(xAPI_Verb verb)
-                => new xApiStatement(this, verb);
 
             /// <summary>
             /// Alias for Verb() that provides a more natural language API.
             /// </summary>
-            public xApiStatement Does(xAPI_Verb verb)
-                => new xApiStatement(this, verb);
+            public PreStatement Does(xAPI_Verb verb)
+                => new PreStatement(this, verb);
+        }
+        
+        public sealed class PreStatement
+        {
+            internal readonly Builder Builder;
+            internal readonly xAPI_Verb Verb;
+            internal PreStatement(Builder builder, xAPI_Verb verb)
+            {
+                Builder = builder;
+                Verb = verb;
+            }
+
+            public xApiStatement Activity(xAPI_Activity activity)
+                => new xApiStatement(this, activity);
         }
 
         // Core statement components
@@ -284,7 +295,7 @@ namespace OmiLAXR.xAPI.Composers
             var actor = _actor.ToTinCanAgent();
             var verb = _verb.ToTinCanVerb(origin);
             var activity = _activity.ToTinCanActivity(origin, _activityExtensions, _interactionType, _correctResponses);
-            var context = _contextExtensions.ToTinCanContext(origin, _language, _platform, _instructor, _team, _teamMembers.ToArray(), _registration);
+            var context = _contextExtensions.ToTinCanContext(GetVersion(), origin, _language, _platform, _instructor, _team, _teamMembers.ToArray(), _registration);
             var result = _resultExtensions.ToTinCanResult(origin, _score, _completion, _success, _response, _duration);
             
             if (flatten)
@@ -293,7 +304,7 @@ namespace OmiLAXR.xAPI.Composers
                 var rowValues = new Dictionary<string, object>()
                 {
                     { "id", _id },
-                    { "version", "1.0.3" },
+                    { "version", _composer.GetDataStandardVersion() },
                     { "timestamp", GetTimestampString() },
                     { "origin", GetOrigin() }
                 };
@@ -339,7 +350,7 @@ namespace OmiLAXR.xAPI.Composers
             csv.AddRow(new Dictionary<string, object>()
             {
                 { "id", _id },
-                { "version", "1.0.3" },
+                { "version", _composer.GetDataStandardVersion() },
                 { "timestamp", GetTimestampString() },
                 { "origin", GetOrigin() },
                 { "authority", formatKey(authority.ToJSON()) },
@@ -366,6 +377,7 @@ namespace OmiLAXR.xAPI.Composers
         private DateTime _timestamp;
         private Guid? _registration;
         private string _uri;
+        private List<Attachment> _attachments = new List<Attachment>();
 
         // State tracking
         private bool _isDiscarded;
@@ -515,7 +527,7 @@ namespace OmiLAXR.xAPI.Composers
         /// <summary>
         /// Sets the activity object and optional activity extensions.
         /// </summary>
-        public xApiStatement Activity(xAPI_Activity activity,
+        public xApiStatement ChangeActivity(xAPI_Activity activity,
             xAPI_Extensions_Activity activityExtensions = null)
         {
             _activity = activity;
@@ -526,7 +538,7 @@ namespace OmiLAXR.xAPI.Composers
             return this;
         }
 
-        public xApiStatement Object(xAPI_Activity activity,
+        public xApiStatement ChangeObject(xAPI_Activity activity,
             xAPI_Extensions_Activity activityExtensions = null)
         {
             _activity = activity;
@@ -538,7 +550,7 @@ namespace OmiLAXR.xAPI.Composers
         /// <summary>
         /// Sets the verb of the statement.
         /// </summary>
-        public xApiStatement Verb(xAPI_Verb verb)
+        public xApiStatement ChangeVerb(xAPI_Verb verb)
         {
             _verb = verb;
             return this;
@@ -636,6 +648,9 @@ namespace OmiLAXR.xAPI.Composers
             return this;
         }
 
+        private static readonly Dictionary<string, TCAPIVersion> Versions = TCAPIVersion.GetSupported();
+        public TCAPIVersion GetVersion() => Versions[GetComposer().GetDataStandardVersion()];
+        
         /// <summary>
         /// Marks the statement as discarded, preventing it from being processed.
         /// </summary>
@@ -848,6 +863,26 @@ namespace OmiLAXR.xAPI.Composers
             return this;
         }
 
+        public xApiStatement WithDuration(Duration duration)
+        {
+            _duration = duration.ToTimeSpan();
+            return this;
+        }
+
+        public xApiStatement AddAttachment(Attachment attachment)
+        {
+            _attachments.Add(attachment);
+            return this;
+        }
+
+        public xApiStatement ClearAttachments()
+        {
+            _attachments.Clear();
+            return this;
+        }
+
+        public IEnumerable<Attachment> GetAttachments() => _attachments;
+        
         /// <summary>
         /// Removes the completion status from the statement.
         /// </summary>
@@ -983,13 +1018,14 @@ namespace OmiLAXR.xAPI.Composers
         /// Creates a new xApiStatement with the specified builder and verb.
         /// Initializes default values and extension collections.
         /// </summary>
-        public xApiStatement(Builder b, xAPI_Verb verb)
+        private xApiStatement(PreStatement p, xAPI_Activity activity)
         {
-            _uri = b.Uri;
-
+            _uri = p.Builder.Uri;
+            _composer = p.Builder.Composer;
             _timestamp = DateTime.Now;
-            _authority = new xAPI_Actor(b.Author.Name, b.Author.Email);
-            _verb = verb;
+            _authority = new xAPI_Actor(p.Builder.Author.Name, p.Builder.Author.Email);
+            _verb = p.Verb;
+            _activity = activity;
             _contextExtensions = new xAPI_Extensions_Context();
             _resultExtensions = new xAPI_Extensions_Result();
             _activityExtensions = new xAPI_Extensions_Activity();
