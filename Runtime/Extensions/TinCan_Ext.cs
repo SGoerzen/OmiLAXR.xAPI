@@ -54,7 +54,7 @@ namespace OmiLAXR.xAPI.Extensions
         #endif
         }
         
-        private static string DisplayValue(object? v)
+        private static string DisplayValue(object v)
         {
             if (v == null)
                 return "null";
