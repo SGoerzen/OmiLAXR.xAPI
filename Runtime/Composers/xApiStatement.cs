@@ -271,7 +271,7 @@ namespace OmiLAXR.xAPI.Composers
         /// Converts the statement to a JSON string, optionally pretty-printed.
         /// </summary>
         public string ToJsonString(bool pretty = false)
-            => this.ToTinCanStatement().ToJSON(pretty);
+            => this.ToTinCanStatement().ToJSON(GetVersion(), pretty);
 
         public string ToShortString()
         {
