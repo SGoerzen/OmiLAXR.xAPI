@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.1] - 2025-12-04
+
+### Fixed
+- Fixed an issue where changing the xAPI version had no effect and it remained at `2.0.0`. The default is now `1.0.3` and version changes are applied correctly.
+- Removed various compiler warnings.
+
+---
+
 ## [2.2.0] - 2025-10-13
 
 ### Breaking Changes
