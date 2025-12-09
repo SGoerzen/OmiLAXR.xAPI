@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.2] - 2025-12-09
+
+### Added
+- Added `string version` to `ToDataStandardString()`, `ToJsonString()` and `ToCsvFormat()` in `xApiStatement`.
+- Added xAPI version selection to `Learning Record Store`. This selection will overwrite the default selection from `xApiRegistry`.
+
+### Fixed
+- Fixed issue that `Learning Record Store` still sends statements by default with version `2.0.0`.
+
 ## [2.2.1] - 2025-12-04
 
 ### Fixed

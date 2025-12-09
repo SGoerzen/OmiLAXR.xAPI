@@ -6,11 +6,8 @@
 #if XAPI_REGISTRY_EXISTS
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using OmiLAXR.Composers;
 using OmiLAXR.Endpoints;
-using OmiLAXR.xAPI.Composers;
-using OmiLAXR.xAPI.Extensions;
 using TinCan;
 using UnityEngine;
 
@@ -25,6 +22,9 @@ namespace OmiLAXR.xAPI.Endpoints
     [Description("Sends all received statements to a Learning Record Store asynchronously.")]
     public class LearningRecordStore : BasicAuthEndpoint
     {
+        [TCAPIVersionDropdown]
+        [SerializeField, Header("This version will overwrite the version of [xApiRegistry]."), InspectorName("xAPI Version")] public string version = "1.0.3";
+        
         /// <summary>
         /// Platform-specific LRS client implementation for handling HTTP communication.
         /// Uses WebGL-compatible wrapper for browser builds and standard RemoteLRS for desktop.
@@ -85,7 +85,7 @@ namespace OmiLAXR.xAPI.Endpoints
             _lrsClient = new WebGLLRSClientWrapper(credentials.endpoint, credentials.username, credentials.password, this);
             #else
             // Use standard RemoteLRS for desktop/mobile builds
-            var remoteLrs = new RemoteLRS(credentials.endpoint, credentials.username, credentials.password);
+            var remoteLrs = new RemoteLRS(credentials.endpoint, TCAPIVersion.GetSupported()[version], credentials.username, credentials.password);
             _lrsClient = new RemoteLRSClientWrapper(remoteLrs);
             #endif
             

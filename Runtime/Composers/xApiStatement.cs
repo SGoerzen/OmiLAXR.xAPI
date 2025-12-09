@@ -265,13 +265,15 @@ namespace OmiLAXR.xAPI.Composers
         /// <summary>
         /// Converts the statement to a standardized xAPI JSON format.
         /// </summary>
-        public string ToDataStandardString() => ToJsonString(pretty: false);
-
+        public string ToDataStandardString(string version = null) => ToJsonString(pretty: false, version: version);
+        
         /// <summary>
         /// Converts the statement to a JSON string, optionally pretty-printed.
         /// </summary>
-        public string ToJsonString(bool pretty = false)
-            => this.ToTinCanStatement().ToJSON(GetVersion(), pretty);
+        public string ToJsonString(bool pretty = false, string version = null)
+        {
+            return this.ToTinCanStatement().ToJSON(version != null ? Versions[version] : TCAPIVersion.V103, pretty);
+        }
 
         public string ToShortString()
         {
@@ -281,7 +283,7 @@ namespace OmiLAXR.xAPI.Composers
         /// <summary>
         /// Converts the statement to CSV format.
         /// </summary>
-        public CsvFormat ToCsvFormat(bool flatten = false)
+        public CsvFormat ToCsvFormat(bool flatten = false, string version = null)
         {
             // This function could be made more simple by just transforming to JSON and parsing by CsvFormat.FromJson.
             // But as we need as much performance and control as possible, the transformation is done manually.
@@ -295,7 +297,7 @@ namespace OmiLAXR.xAPI.Composers
             var actor = _actor.ToTinCanAgent();
             var verb = _verb.ToTinCanVerb(origin);
             var activity = _activity.ToTinCanActivity(origin, _activityExtensions, _interactionType, _correctResponses);
-            var context = _contextExtensions.ToTinCanContext(GetVersion(), origin, _language, _platform, _instructor, _team, _teamMembers.ToArray(), _registration);
+            var context = _contextExtensions.ToTinCanContext(version == null ? GetVersion() : Versions[version], origin, _language, _platform, _instructor, _team, _teamMembers.ToArray(), _registration);
             var result = _resultExtensions.ToTinCanResult(origin, _score, _completion, _success, _response, _duration);
             
             if (flatten)

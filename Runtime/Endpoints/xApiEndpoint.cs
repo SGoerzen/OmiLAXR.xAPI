@@ -3,6 +3,8 @@
 * Copyright (C) 2025 Sergej Görzen <sergej.goerzen@gmail.com>
 * This file is part of OmiLAXR.xAPI.
 */
+
+using System.Collections.Generic;
 using OmiLAXR.Composers;
 using OmiLAXR.Endpoints;
 using OmiLAXR.xAPI.Composers;
