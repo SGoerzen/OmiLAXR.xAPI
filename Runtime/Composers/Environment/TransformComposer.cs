@@ -8,7 +8,6 @@ using System.ComponentModel;
 using OmiLAXR.Components;
 using OmiLAXR.Composers;
 using OmiLAXR.TrackingBehaviours;
-using OmiLAXR.xAPI.Composers;
 using UnityEngine;
 
 namespace OmiLAXR.xAPI.Composers.Environment
