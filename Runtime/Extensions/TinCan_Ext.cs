@@ -6,6 +6,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using OmiLAXR.xAPI.Composers;
@@ -42,25 +43,25 @@ namespace OmiLAXR.xAPI.Extensions
             foreach (var (extension, value) in extensions)
             {
                 var id = extension.CreateId(uri);
-                jObject.Add(id, value == null ? "null" : DisplayValue(value));
+                jObject.Add(id, ToJsonToken(value));
             }
         #else
             // Use traditional KeyValuePair iteration for older Unity versions
             foreach (var kvp in extensions)
             {
                 var id = kvp.Key.CreateId(uri);
-                jObject.Add(id, kvp.Value == null ? "null" : DisplayValue(kvp.Value));
+                jObject.Add(id, ToJsonToken(kvp.Value));
             }
         #endif
         }
         
-        private static string DisplayValue(object v)
+        private static JToken ToJsonToken(object v)
         {
             if (v == null)
-                return "null";
+                return JValue.CreateNull();
 
-            if (v is string s)
-                return $"\"{s}\"";
+            if (v is JToken token)
+                return token.DeepClone();
 
             if (v is IDictionary dict)
                 return ExpandDictionary(dict);
@@ -68,33 +69,39 @@ namespace OmiLAXR.xAPI.Extensions
             if (v is IEnumerable e && !(v is string))
                 return ExpandArray(e);
 
-            return v.ToString();
+            try
+            {
+                return JToken.FromObject(v);
+            }
+            catch
+            {
+                return new JValue(v.ToString());
+            }
         }
         
-        private static string ExpandArray(IEnumerable array)
+        private static JArray ExpandArray(IEnumerable array)
         {
-            var items = new List<string>();
+            var items = new JArray();
 
             foreach (var item in array)
             {
-                items.Add(DisplayValue(item));
+                items.Add(ToJsonToken(item));
             }
 
-            return "[" + string.Join(", ", items) + "]";
+            return items;
         }
 
-        private static string ExpandDictionary(IDictionary dict)
+        private static JObject ExpandDictionary(IDictionary dict)
         {
-            var items = new List<string>();
+            var items = new JObject();
 
             foreach (DictionaryEntry entry in dict)
             {
-                var key = DisplayValue(entry.Key);
-                var value = DisplayValue(entry.Value);
-                items.Add($"{key}: {value}");
+                var key = Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? "null";
+                items[key] = ToJsonToken(entry.Value);
             }
 
-            return "{" + string.Join(", ", items) + "}";
+            return items;
         }
 
         /// <summary>
