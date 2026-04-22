@@ -54,6 +54,9 @@ namespace OmiLAXR.xAPI.Composers.HigherComposers
         /// </summary>
         /// <returns>Current base URI for xAPI identifier resolution</returns>
         protected virtual string GetUri() => Uri;
+        
+        public xApiRegistry Registry { get; protected set; }
+        public override string GetDataStandardVersion() => Registry.version;
 
         /// <summary>
         /// Unity Awake method that initializes semantic composer dependencies and configuration.
@@ -63,9 +66,9 @@ namespace OmiLAXR.xAPI.Composers.HigherComposers
         protected virtual void Awake()
         {
             // Retrieve global URI configuration from parent xAPI Registry
-            var globalUri = GetComponentInParent<xApiRegistry>();
-            if (globalUri && globalUri.enabled)
-                Uri = globalUri.uri;
+            Registry = GetComponentInParent<xApiRegistry>();
+            if (Registry && Registry.enabled)
+                Uri = Registry.uri;
 
             // Establish connection to target pipeline for data access
             targetPipeline = GetPipeline<TActorOfPipeline>();

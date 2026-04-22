@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.2.3] - 2026-04-22
+
+### Added
+- Added `ExampleHigherComposer` sample under `Samples~/xApiComposers`.
+
+### Changed
+- Improved tracking-related statement performance in `xApiStatement`.
+- Changed xAPI extension JSON serialization to preserve typed extension values.
+- Updated package version metadata.
+
+### Fixed
+- Fixed incorrect context version handling in `ScenarioContextHook`.
+- Removed a broken runtime higher-composer example and stabilized `xApiSemanticComposer`.
+
+---
+
 ## [2.2.2] - 2025-12-09
 
 ### Added

@@ -33,7 +33,7 @@ namespace OmiLAXR.xAPI.Composers
             internal readonly Author Author; // The statement author/authority
             internal readonly string Uri; // Base URI for identifiers
             internal readonly IComposer Composer;
-            
+
             /// <summary>
             /// Creates a new Builder with the specified URI and author.
             /// </summary>
@@ -50,8 +50,8 @@ namespace OmiLAXR.xAPI.Composers
             public PreStatement Does(xAPI_Verb verb)
                 => new PreStatement(this, verb);
         }
-        
-        public sealed class PreStatement
+
+        public readonly struct PreStatement
         {
             internal readonly Builder Builder;
             internal readonly xAPI_Verb Verb;
@@ -71,30 +71,36 @@ namespace OmiLAXR.xAPI.Composers
         private xAPI_Verb _verb; // The action performed
         private xAPI_Activity _activity; // The object/activity acted upon
         private xAPI_Actor _actor; // The person/entity performing the action
-        private List<xAPI_Actor> _groupMembers = new List<xAPI_Actor>(); // For group actors
-        private List<xAPI_Actor> _teamMembers = new List<xAPI_Actor>(); // For team context
+        private List<xAPI_Actor> _groupMembers = new List<xAPI_Actor>(0); // For group actors
+        private List<xAPI_Actor> _teamMembers = new List<xAPI_Actor>(0); // For team context
         private xAPI_Actor? _instructor; // Optional instructor
         private xAPI_Actor _authority; // Statement authority
         private xAPI_Actor? _team; // Optional team
         private string _language = "en"; // Default language code
         private string _platform = "OmiLAXRv2"; // Platform identifier
         private InteractionType _interactionType; // Interaction type
-        private List<string> _correctResponses = new List<string>(); // Correct responses
+        private List<string> _correctResponses = new List<string>(0); // Correct responses
         private TimeSpan? _duration;
 
         // Extension collections for different parts of the statement
-        private readonly xAPI_Extensions_Activity _activityExtensions = new xAPI_Extensions_Activity();
+        private readonly xAPI_Extensions_Activity _activityExtensions;
         //private readonly xAPI_Extensions_Activity _activityGroup = new xAPI_Extensions_Activity();
         //private readonly xAPI_Extensions_Activity _activityParent = new xAPI_Extensions_Activity();
         //private readonly xAPI_Extensions_Activity _activityCategory = new xAPI_Extensions_Activity();
-        private readonly xAPI_Extensions_Context _contextExtensions = new xAPI_Extensions_Context();
-        private readonly xAPI_Extensions_Result _resultExtensions = new xAPI_Extensions_Result();
+        private readonly xAPI_Extensions_Context _contextExtensions;
+        private readonly xAPI_Extensions_Result _resultExtensions;
 
         // Accessor methods for extensions
         public xAPI_Extensions_Activity GetActivityExtensions() => _activityExtensions;
         public xAPI_Extensions_Context GetContextExtensions() => _contextExtensions;
         public xAPI_Extensions_Result GetResultExtensions() => _resultExtensions;
         public xAPI_Activity GetActivity() => _activity;
+
+        // Cached arrays to avoid per-call allocations from ToArray()
+        private xAPI_Actor[] _groupMembersCached = Array.Empty<xAPI_Actor>();
+        private xAPI_Actor[] _teamMembersCached = Array.Empty<xAPI_Actor>();
+        private bool _groupDirty = true;
+        private bool _teamDirty = true;
 
         public delegate xAPI_Extensions ExtensionActionDelegate(object value);
         /// <summary>
@@ -109,10 +115,11 @@ namespace OmiLAXR.xAPI.Composers
         /// </summary>
         public T? GetExtensionValue<T>(string key, T? defaultValue = null) where T : struct
         {
-            foreach (var kvp in _activityExtensions.Where(kvp => kvp.Key.Key == key))
+            // LINQ-free to avoid GC allocations in hot paths
+            foreach (var kvp in _activityExtensions)
             {
-                if (kvp.Value is T typedValue)
-                    return typedValue;
+                if (kvp.Key.Key != key) continue;
+                if (kvp.Value is T typedValue) return typedValue;
                 break; // key found, but type mismatch
             }
 
@@ -142,7 +149,6 @@ namespace OmiLAXR.xAPI.Composers
 #endif
         }
 
-
 #if XAPI_REGISTRY_EXISTS
         public T? GetValue<T>(ExtensionActionDelegate action, T? defaultValue = null) where T : struct
             => GetValue(action(null)[0].Key, defaultValue);
@@ -163,10 +169,11 @@ namespace OmiLAXR.xAPI.Composers
         /// </summary>
         public T? GetContextValue<T>(string key, T? defaultValue = null) where T : struct
         {
-            foreach (var kvp in _contextExtensions.Where(kvp => kvp.Key.Key == key))
+            // LINQ-free to avoid GC allocations in hot paths
+            foreach (var kvp in _contextExtensions)
             {
-                if (kvp.Value is T typedValue)
-                    return typedValue;
+                if (kvp.Key.Key != key) continue;
+                if (kvp.Value is T typedValue) return typedValue;
                 break; // key found, but type mismatch
             }
 
@@ -176,7 +183,7 @@ namespace OmiLAXR.xAPI.Composers
         /// <summary>
         /// Retrieves a context extension value by extension object.
         /// </summary>
-        public T? GetContextValue<T>(xAPI_Extension extension, T? defaultValue = null) where T : struct 
+        public T? GetContextValue<T>(xAPI_Extension extension, T? defaultValue = null) where T : struct
             => GetContextValue(extension.Key, defaultValue);
 
         /// <summary>
@@ -184,31 +191,51 @@ namespace OmiLAXR.xAPI.Composers
         /// </summary>
         public T? GetResultValue<T>(string key, T? defaultValue = null) where T : struct
         {
-            foreach (var kvp in _resultExtensions.Where(kvp => kvp.Key.Key == key))
+            // LINQ-free to avoid GC allocations in hot paths
+            foreach (var kvp in _resultExtensions)
             {
-                if (kvp.Value is T typedValue)
-                    return typedValue;
+                if (kvp.Key.Key != key) continue;
+                if (kvp.Value is T typedValue) return typedValue;
                 break; // key found, but type mismatch
             }
-            
+
             return defaultValue;
         }
 
         /// <summary>
         /// Retrieves a result extension value by extension object.
         /// </summary>
-        public T? GetResultValue<T>(xAPI_Extension extension, T? defaultValue = null) where T : struct 
+        public T? GetResultValue<T>(xAPI_Extension extension, T? defaultValue = null) where T : struct
             => GetResultValue(extension.Key, defaultValue);
-        
+
         public bool IsFromComposer<T>() where T : IComposer => GetComposer().GetType() == typeof(T);
 
         // Accessors for statement components
-        public xAPI_Actor[] GetGroupMembers() => _groupMembers.ToArray();
+        public xAPI_Actor[] GetGroupMembers()
+        {
+            if (_groupDirty)
+            {
+                _groupMembersCached = _groupMembers.Count == 0 ? Array.Empty<xAPI_Actor>() : _groupMembers.ToArray();
+                _groupDirty = false;
+            }
+            return _groupMembersCached;
+        }
+
         public bool IsInGroup => _groupMembers.Count > 0;
         public xAPI_Verb GetVerb() => _verb;
         public xAPI_Actor GetActor() => _actor;
         public xAPI_Actor? GetTeam() => _team;
-        public xAPI_Actor[] GetTeamMembers() => _teamMembers.ToArray();
+
+        public xAPI_Actor[] GetTeamMembers()
+        {
+            if (_teamDirty)
+            {
+                _teamMembersCached = _teamMembers.Count == 0 ? Array.Empty<xAPI_Actor>() : _teamMembers.ToArray();
+                _teamDirty = false;
+            }
+            return _teamMembersCached;
+        }
+
         public string GetLanguage() => _language;
         public Score GetScore() => _score;
         public bool? GetSuccess() => _success;
@@ -256,7 +283,9 @@ namespace OmiLAXR.xAPI.Composers
                     _registration = _registration,
                     _uri = _uri,
                     _composer = _composer,
-                    _senderPipelineInfo = _senderPipelineInfo
+                    _senderPipelineInfo = _senderPipelineInfo,
+                    _groupDirty = true,
+                    _teamDirty = true
                 }
                 .WithExtension(_activityExtensions)
                 .WithResult(_resultExtensions)
@@ -266,7 +295,7 @@ namespace OmiLAXR.xAPI.Composers
         /// Converts the statement to a standardized xAPI JSON format.
         /// </summary>
         public string ToDataStandardString(string version = null) => ToJsonString(pretty: false, version: version);
-        
+
         /// <summary>
         /// Converts the statement to a JSON string, optionally pretty-printed.
         /// </summary>
@@ -288,18 +317,19 @@ namespace OmiLAXR.xAPI.Composers
             // This function could be made more simple by just transforming to JSON and parsing by CsvFormat.FromJson.
             // But as we need as much performance and control as possible, the transformation is done manually.
             var origin = flatten ? "/" : GetOrigin();
-            
+
             var formatKey = new Func<string, string>(s =>
-                string.IsNullOrEmpty(origin) || origin == "/" ? 
-                    s.Replace("file:///", "").Replace('/', '_') : s);
-            
+                string.IsNullOrEmpty(origin) || origin == "/"
+                    ? s.Replace("file:///", "").Replace('/', '_')
+                    : s);
+
             var authority = _authority.ToTinCanAgent();
             var actor = _actor.ToTinCanAgent();
             var verb = _verb.ToTinCanVerb(origin);
             var activity = _activity.ToTinCanActivity(origin, _activityExtensions, _interactionType, _correctResponses);
-            var context = _contextExtensions.ToTinCanContext(version == null ? GetVersion() : Versions[version], origin, _language, _platform, _instructor, _team, _teamMembers.ToArray(), _registration);
+            var context = _contextExtensions.ToTinCanContext(version == null ? GetVersion() : Versions[version], origin, _language, _platform, _instructor, _team, GetTeamMembers(), _registration);
             var result = _resultExtensions.ToTinCanResult(origin, _score, _completion, _success, _response, _duration);
-            
+
             if (flatten)
             {
                 var flatCsv = new CsvFormat(rowsCapacity: 1);
@@ -310,12 +340,12 @@ namespace OmiLAXR.xAPI.Composers
                     { "timestamp", GetTimestampString() },
                     { "origin", GetOrigin() }
                 };
-                
+
                 foreach (var kvp in authority.ToJObject().Flatten())
                 {
                     rowValues["authority_" + formatKey(kvp.Key)] = kvp.Value;
                 }
-                
+
                 foreach (var kvp in actor.ToJObject().Flatten())
                 {
                     rowValues["actor_" + formatKey(kvp.Key)] = kvp.Value;
@@ -342,11 +372,10 @@ namespace OmiLAXR.xAPI.Composers
                 {
                     rowValues["result_" + formatKey(kvp.Key)] = kvp.Value;
                 }
-                
+
                 flatCsv.AddRow(rowValues);
                 return flatCsv;
             }
-
 
             var csv = new CsvFormat(rowsCapacity: 1);
             csv.AddRow(new Dictionary<string, object>()
@@ -379,8 +408,8 @@ namespace OmiLAXR.xAPI.Composers
         private DateTime _timestamp;
         private Guid? _registration;
         private string _uri;
-        private List<Attachment> _attachments = new List<Attachment>();
 
+        private List<Attachment> _attachments = new List<Attachment>();
         // State tracking
         private bool _isDiscarded;
         private IComposer _composer;
@@ -422,6 +451,12 @@ namespace OmiLAXR.xAPI.Composers
             if (actor.IsGroupActor)
             {
                 _groupMembers = ((ActorGroup)actor).GetMembers().ToXAPIActors().ToList();
+                _groupDirty = true;
+            }
+            else
+            {
+                if (_groupMembers.Count != 0) _groupMembers.Clear();
+                _groupDirty = true;
             }
 
             // Handle team information
@@ -429,6 +464,13 @@ namespace OmiLAXR.xAPI.Composers
             {
                 _team = actor.team.ToXAPIActor();
                 _teamMembers = actor.team.GetMembers().ToXAPIActors().ToList();
+                _teamDirty = true;
+            }
+            else
+            {
+                _team = null;
+                if (_teamMembers.Count != 0) _teamMembers.Clear();
+                _teamDirty = true;
             }
 
             // Handle instructor information
@@ -567,15 +609,17 @@ namespace OmiLAXR.xAPI.Composers
             return this;
         }
 
-        
         public xApiStatement WithCorrectResponses(List<string> correctResponses)
         {
-            _correctResponses = correctResponses;
+            _correctResponses = correctResponses ?? new List<string>(0);
             return this;
         }
+
         public xApiStatement WithCorrectResponses(params string[] correctResponses)
         {
-            _correctResponses = correctResponses.ToList();
+            _correctResponses = correctResponses == null || correctResponses.Length == 0
+                ? new List<string>(0)
+                : new List<string>(correctResponses);
             return this;
         }
 
@@ -589,7 +633,7 @@ namespace OmiLAXR.xAPI.Composers
             _interactionType = interactionType;
             return this;
         }
-        
+
         /// <summary>
         /// Deprecated method. Use WithExtension instead.
         /// </summary>
@@ -652,7 +696,7 @@ namespace OmiLAXR.xAPI.Composers
 
         private static readonly Dictionary<string, TCAPIVersion> Versions = TCAPIVersion.GetSupported();
         public TCAPIVersion GetVersion() => Versions[GetComposer().GetDataStandardVersion()];
-        
+
         /// <summary>
         /// Marks the statement as discarded, preventing it from being processed.
         /// </summary>
@@ -732,6 +776,7 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement DropGroup()
         {
             _groupMembers.Clear();
+            _groupDirty = true;
             return this;
         }
 
@@ -741,6 +786,7 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement AddToGroup(params xAPI_Actor[] actors)
         {
             _groupMembers.AddRange(actors);
+            _groupDirty = true;
             return this;
         }
 
@@ -752,9 +798,10 @@ namespace OmiLAXR.xAPI.Composers
             foreach (var actor in actors)
             {
                 var index = _groupMembers.FindIndex(o => o.Email == actor.Email && o.Name == actor.Name);
-                _groupMembers.RemoveAt(index);
+                if (index >= 0) _groupMembers.RemoveAt(index);
             }
 
+            _groupDirty = true;
             return this;
         }
 
@@ -764,6 +811,7 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement DropTeam()
         {
             _teamMembers.Clear();
+            _teamDirty = true;
             return this;
         }
 
@@ -773,6 +821,7 @@ namespace OmiLAXR.xAPI.Composers
         public xApiStatement AddToTeam(params xAPI_Actor[] actors)
         {
             _teamMembers.AddRange(actors);
+            _teamDirty = true;
             return this;
         }
 
@@ -784,9 +833,10 @@ namespace OmiLAXR.xAPI.Composers
             foreach (var actor in actors)
             {
                 var index = _teamMembers.FindIndex(o => o.Email == actor.Email && o.Name == actor.Name);
-                _teamMembers.RemoveAt(index);
+                if (index >= 0) _teamMembers.RemoveAt(index);
             }
 
+            _teamDirty = true;
             return this;
         }
 
@@ -884,7 +934,7 @@ namespace OmiLAXR.xAPI.Composers
         }
 
         public IEnumerable<Attachment> GetAttachments() => _attachments;
-        
+
         /// <summary>
         /// Removes the completion status from the statement.
         /// </summary>
@@ -1035,6 +1085,10 @@ namespace OmiLAXR.xAPI.Composers
 
         private xApiStatement()
         {
+            // Ensure readonly extension collections exist even for Clone() base instance usage
+            _contextExtensions = new xAPI_Extensions_Context();
+            _resultExtensions = new xAPI_Extensions_Result();
+            _activityExtensions = new xAPI_Extensions_Activity();
         }
 
         /// <summary>
